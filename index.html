@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Copa 2026 · Álbum Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #06090f;
+  --c-surface: #0d1320;
+  --c-card: #111927;
+  --c-card2: #16203a;
+  --c-border: #1e2d4a;
+  --c-border2: #243550;
+  --c-gold: #f0b429;
+  --c-gold2: #ffd166;
+  --c-gold-dim: #7a5a10;
+  --c-green: #22c55e;
+  --c-green-dim: #14532d;
+  --c-red: #f43f5e;
+  --c-red-dim: #4c0519;
+  --c-text: #e2e8f0;
+  --c-text2: #94a3b8;
+  --c-text3: #4a6080;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-family: 'DM Sans', sans-serif; font-size: 15px; overscroll-behavior: none; }
+
+/* ── LOADING ── */
+#loading-screen {
+  position: fixed; inset: 0; background: var(--c-bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 9999; gap: 16px;
+}
+.spinner {
+  width: 40px; height: 40px; border: 3px solid var(--c-border);
+  border-top-color: var(--c-gold); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--c-gold); }
+.loading-sub { font-size: 13px; color: var(--c-text3); }
+
+/* ── LOGIN ── */
+#login-screen {
+  display: none; min-height: 100vh;
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 32px 24px;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, #1a2f5a 0%, var(--c-bg) 70%);
+}
+.login-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(38px,10vw,56px); line-height: 1; text-align: center; margin-bottom: 6px; background: linear-gradient(135deg, var(--c-gold2) 0%, var(--c-gold) 50%, #c88b00 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -1px; }
+.login-sub { font-family: 'Syne', sans-serif; font-size: 12px; letter-spacing: 4px; color: var(--c-text3); text-transform: uppercase; margin-bottom: 56px; }
+.login-card { width: 100%; max-width: 380px; background: var(--c-card); border: 1px solid var(--c-border); border-radius: 20px; padding: 28px 24px; box-shadow: 0 24px 64px rgba(0,0,0,0.6); }
+.login-card-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 6px; }
+.login-card-sub { font-size: 13px; color: var(--c-text2); margin-bottom: 28px; line-height: 1.5; }
+.google-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
+  background: #fff; color: #1a1a1a; border: none; border-radius: 10px; padding: 13px 20px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer;
+  transition: all 0.2s; box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.google-btn:active { transform: scale(0.98); background: #f5f5f5; }
+.google-icon { width: 20px; height: 20px; }
+.login-disclaimer { font-size: 11px; color: var(--c-text3); text-align: center; margin-top: 16px; line-height: 1.6; }
+
+/* ── APP ── */
+#app { display: none; min-height: 100vh; flex-direction: column; }
+
+/* TOPBAR */
+.topbar { background: var(--c-surface); border-bottom: 1px solid var(--c-border); padding: 12px 16px; position: sticky; top: 0; z-index: 100; }
+.topbar-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid var(--c-gold); }
+.user-avatar-placeholder { width: 36px; height: 36px; border-radius: 50%; background: var(--c-gold); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: #000; border: 2px solid var(--c-gold); }
+.topbar-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; line-height: 1; }
+.topbar-sub { font-size: 11px; color: var(--c-text2); margin-top: 2px; }
+.topbar-badge { background: var(--c-gold); color: #000; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; padding: 4px 12px; border-radius: 20px; }
+.topbar-progress { background: var(--c-card); border-radius: 6px; padding: 8px 12px; border: 1px solid var(--c-border); }
+.progress-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--c-text2); margin-bottom: 6px; }
+.progress-meta span:last-child { color: var(--c-gold); font-weight: 600; }
+.bar-track { height: 5px; background: var(--c-border); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, var(--c-gold), var(--c-gold2)); border-radius: 3px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
+
+/* SAVING INDICATOR */
+.save-indicator { position: fixed; top: 12px; right: 16px; z-index: 500; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; background: var(--c-card); border: 1px solid var(--c-border); color: var(--c-text3); transition: all 0.3s; opacity: 0; pointer-events: none; }
+.save-indicator.saving { opacity: 1; color: var(--c-gold); border-color: var(--c-gold-dim); }
+.save-indicator.saved { opacity: 1; color: var(--c-green); border-color: var(--c-green-dim); }
+
+/* MODE TABS */
+.mode-tabs { display: flex; background: var(--c-card); border-radius: var(--radius-sm); padding: 3px; margin: 10px 14px 0; gap: 2px; }
+.mode-tab { flex: 1; padding: 7px 4px; border-radius: 6px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; text-align: center; cursor: pointer; color: var(--c-text3); transition: all 0.2s; letter-spacing: 0.3px; }
+.mode-tab.active { background: var(--c-surface); color: var(--c-gold); border: 1px solid var(--c-border); }
+
+/* STATS */
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; padding: 12px 14px 4px; }
+.stat-tile { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 10px 8px; text-align: center; }
+.stat-n { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; line-height: 1; }
+.stat-n.g { color: var(--c-green); } .stat-n.r { color: var(--c-red); } .stat-n.y { color: var(--c-gold); } .stat-n.o { color: #fb923c; }
+.stat-l { font-size: 9px; color: var(--c-text3); font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 3px; }
+
+/* CONTROLS */
+.controls-bar { display: flex; gap: 8px; padding: 8px 14px 6px; }
+.search-inp { flex: 1; background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius-sm); padding: 9px 13px; color: var(--c-text); font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; }
+.search-inp:focus { border-color: var(--c-gold); }
+.search-inp::placeholder { color: var(--c-text3); }
+.chip { padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--c-border); background: var(--c-card); color: var(--c-text3); font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.chip.on { background: var(--c-gold); color: #000; border-color: var(--c-gold); }
+
+/* CONTENT */
+.content-area { padding: 6px 14px 100px; }
+
+/* GROUP CARDS */
+.group-card { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; transition: border-color 0.3s; animation: fadeIn 0.3s ease both; }
+.group-card.full { border-color: var(--c-green-dim); }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+.group-head { display: flex; align-items: center; gap: 12px; padding: 13px 14px; cursor: pointer; user-select: none; }
+.group-letter { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, var(--c-gold), #c88b00); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: #000; flex-shrink: 0; }
+.group-letter.sp { background: linear-gradient(135deg, #3b82f6, #1d4ed8); font-size: 12px; color: #fff; }
+.group-meta { flex: 1; min-width: 0; }
+.group-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.3px; }
+.group-teams-list { font-size: 11px; color: var(--c-text3); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.group-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.group-count { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: var(--c-gold); text-align: right; line-height: 1; }
+.group-mini-bar { width: 48px; height: 4px; background: var(--c-border); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.group-mini-fill { height: 100%; background: var(--c-green); border-radius: 2px; transition: width 0.4s; }
+.chevron { font-size: 11px; color: var(--c-text3); transition: transform 0.25s; }
+.chevron.open { transform: rotate(180deg); }
+
+/* TEAM */
+.team-section { display: none; border-top: 1px solid var(--c-border); }
+.team-section.open { display: block; }
+.team-row { padding: 12px 14px; border-bottom: 1px solid var(--c-border); }
+.team-row:last-child { border-bottom: none; }
+.team-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.team-identity { display: flex; align-items: center; gap: 8px; }
+.team-flag-code { background: var(--c-border2); color: var(--c-gold); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 5px; letter-spacing: 0.5px; }
+.team-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; }
+.team-count-badge { font-size: 11px; color: var(--c-text2); }
+.team-prog-bar { height: 3px; background: var(--c-border); border-radius: 2px; overflow: hidden; margin-bottom: 10px; }
+.team-prog-fill { height: 100%; background: linear-gradient(90deg, var(--c-green), #34d399); border-radius: 2px; transition: width 0.4s; }
+.quick-actions { display: flex; gap: 6px; margin-bottom: 10px; }
+.qa-btn { padding: 5px 10px; border-radius: 6px; border: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.3px; cursor: pointer; transition: all 0.15s; }
+.qa-btn.ga { background: var(--c-green-dim); color: var(--c-green); }
+.qa-btn.ra { background: var(--c-red-dim); color: var(--c-red); }
+
+/* STICKER GRID */
+.sticker-grid { display: grid; grid-template-columns: repeat(10,1fr); gap: 4px; }
+.stk { aspect-ratio: 1; width: 100%; border-radius: 6px; border: 1.5px solid var(--c-border2); background: var(--c-surface); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; color: var(--c-text3); cursor: pointer; transition: all 0.12s; user-select: none; position: relative; line-height: 1; }
+.stk:active { transform: scale(0.85); }
+.stk.have { background: var(--c-green-dim); border-color: var(--c-green); }
+.stk.have::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--c-green); font-weight: 900; }
+.stk.have span { display: none; }
+.stk.sp-stk { background: #0f1a2e; border-color: #1e3a6e; color: #4a7fc1; }
+.stk.sp-stk.have { background: var(--c-green-dim); border-color: var(--c-green); }
+.stk.friend-has { border-color: #3b82f6; background: #0f1f3d; color: #60a5fa; }
+.stk.both-have { background: var(--c-green-dim); border-color: var(--c-green); }
+
+/* READONLY stickers */
+.stk.readonly { cursor: default; }
+.stk.readonly:active { transform: none; }
+
+/* SECTION LABEL */
+.section-label { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--c-text3); text-transform: uppercase; padding: 12px 0 8px; }
+
+/* BOTTOM BAR */
+.bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--c-surface); border-top: 1px solid var(--c-border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); display: flex; gap: 8px; z-index: 200; }
+.bb-btn { flex: 1; padding: 11px 8px; border-radius: var(--radius-sm); border: 1px solid var(--c-border); background: var(--c-card); color: var(--c-text2); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; cursor: pointer; text-align: center; transition: all 0.2s; }
+.bb-btn .icon { display: block; font-size: 16px; margin-bottom: 2px; }
+.bb-btn.primary { background: var(--c-gold); color: #000; border-color: var(--c-gold); }
+.bb-btn.danger { border-color: var(--c-red-dim); color: var(--c-red); background: transparent; }
+
+/* COMPARE BANNER */
+.compare-banner { display: none; background: linear-gradient(135deg,#1a1200,#2a2000); border: 1px solid var(--c-gold-dim); border-radius: var(--radius); padding: 12px 14px; margin: 8px 14px 0; align-items: center; gap: 12px; }
+.compare-banner.show { display: flex; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(40px); background: var(--c-card); border: 1px solid var(--c-border); color: var(--c-text); font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; padding: 10px 20px; border-radius: 20px; z-index: 999; opacity: 0; transition: all 0.3s; white-space: nowrap; box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { background: var(--c-green-dim); border-color: var(--c-green); color: var(--c-green); }
+.toast.info { background: #1a1200; border-color: var(--c-gold-dim); color: var(--c-gold); }
+.toast.err { background: var(--c-red-dim); border-color: var(--c-red); color: var(--c-red); }
+
+/* MODAL */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
+.modal-bg.show { display: flex; }
+.modal-sheet { background: var(--c-card); border: 1px solid var(--c-border); border-radius: 24px 24px 0 0; padding: 28px 24px calc(28px + env(safe-area-inset-bottom)); width: 100%; max-width: 480px; animation: slideUp 0.3s cubic-bezier(.4,0,.2,1); }
+@keyframes slideUp { from { transform: translateY(60px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+.modal-handle { width: 40px; height: 4px; background: var(--c-border2); border-radius: 2px; margin: 0 auto 20px; }
+.modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--c-text2); margin-bottom: 20px; line-height: 1.5; }
+.btn { padding: 11px 18px; border-radius: var(--radius-sm); border: none; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.btn-gold { background: var(--c-gold); color: #000; }
+.btn-outline { background: transparent; border: 1px solid var(--c-border2); color: var(--c-text2); }
+.btn-full { width: 100%; padding: 13px; margin-top: 8px; }
+.btn-danger { background: var(--c-red-dim); color: var(--c-red); border: 1px solid var(--c-red-dim); }
+
+/* SHARE LINK BOX */
+.share-link-box { background: var(--c-surface); border: 1px solid var(--c-border); border-radius: var(--radius-sm); padding: 12px; display: flex; align-items: center; gap: 8px; margin: 12px 0; }
+.share-link-text { flex: 1; font-family: monospace; font-size: 12px; color: var(--c-gold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.share-copy-btn { background: var(--c-gold); color: #000; border: none; border-radius: 6px; padding: 6px 12px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; cursor: pointer; flex-shrink: 0; }
+
+/* PUBLIC PROFILE */
+#public-profile { display: none; min-height: 100vh; flex-direction: column; }
+.pub-header { background: var(--c-surface); border-bottom: 1px solid var(--c-border); padding: 16px; }
+.pub-avatar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.pub-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--c-gold); }
+.pub-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+.pub-sub { font-size: 12px; color: var(--c-text2); margin-top: 2px; }
+.pub-readonly-badge { display: inline-flex; align-items: center; gap: 4px; background: #1a1200; border: 1px solid var(--c-gold-dim); color: var(--c-gold); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 10px; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px; margin-top: 6px; }
+
+/* DUP MODE */
+.dup-form-card { background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 16px 14px; margin-bottom: 12px; }
+.dup-form-label { font-size: 10px; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 1px; color: var(--c-text3); margin-bottom: 5px; }
+.dup-select { width: 100%; background: var(--c-surface); border: 1.5px solid var(--c-border); border-radius: 8px; padding: 10px 12px; color: var(--c-text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; appearance: none; -webkit-appearance: none; }
+.dup-select:focus { border-color: var(--c-gold); }
+.dup-num-row { display: flex; gap: 8px; align-items: center; }
+.dup-num-inp { flex: 1; background: var(--c-surface); border: 1.5px solid var(--c-border); border-radius: 8px; padding: 10px; color: var(--c-text); font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; outline: none; text-align: center; }
+.dup-num-inp:focus { border-color: var(--c-gold); }
+.dup-add-btn { background: var(--c-gold); color: #000; border: none; border-radius: 8px; padding: 10px 18px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; cursor: pointer; white-space: nowrap; }
+.dup-item { background: var(--c-card); border: 1px solid var(--c-border); border-radius: 10px; display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+.dup-num-badge { width: 36px; height: 36px; border-radius: 8px; background: #2a1a00; border: 1.5px solid var(--c-gold-dim); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: var(--c-gold); flex-shrink: 0; }
+.dup-counter { display: flex; align-items: center; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 8px; overflow: hidden; }
+.dup-counter-btn { width: 34px; height: 34px; background: transparent; border: none; font-size: 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.dup-counter-btn.minus { color: var(--c-red); }
+.dup-counter-btn.plus { color: var(--c-green); }
+.dup-counter-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--c-gold); min-width: 28px; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loading-title">⚽ Copa 2026</div>
+  <div class="spinner"></div>
+  <div class="loading-sub">Carregando...</div>
+</div>
+
+<!-- SAVE INDICATOR -->
+<div class="save-indicator" id="save-indicator">💾 Salvando...</div>
+
+<!-- LOGIN -->
+<div id="login-screen" style="display:none;flex-direction:column">
+  <div class="login-logo">COPA 2026</div>
+  <div class="login-sub">Álbum Digital</div>
+  <div class="login-card">
+    <div class="login-card-title">Bem-vindo! 👋</div>
+    <div class="login-card-sub">Entre com sua conta Google para salvar seu álbum na nuvem e compartilhar com amigos.</div>
+    <button class="google-btn" onclick="signInWithGoogle()">
+      <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Entrar com Google
+    </button>
+    <div class="login-disclaimer">Seus dados ficam salvos na nuvem e só você pode editá-los.<br>Compartilhe seu álbum em modo somente leitura.</div>
+  </div>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="app" style="display:none;flex-direction:column">
+  <div class="topbar">
+    <div class="topbar-row1">
+      <div class="topbar-left">
+        <img class="user-avatar" id="app-photo" src="" alt="" onerror="this.style.display='none';document.getElementById('app-avatar-ph').style.display='flex'">
+        <div class="user-avatar-placeholder" id="app-avatar-ph" style="display:none">?</div>
+        <div>
+          <div class="topbar-name" id="app-name">—</div>
+          <div class="topbar-sub">Copa 2026 · Álbum Digital</div>
+        </div>
+      </div>
+      <div class="topbar-badge" id="app-pct">0%</div>
+    </div>
+    <div class="topbar-progress">
+      <div class="progress-meta"><span>Progresso geral</span><span id="prog-text">0 / 0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <div class="mode-tab active" id="mode-normal" onclick="setMode('normal')">📋 Álbum</div>
+    <div class="mode-tab" id="mode-dup" onclick="setMode('dup')">🔁 Repetidas</div>
+    <div class="mode-tab" id="mode-falta" onclick="setMode('falta')">📊 Resumo</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-tile"><div class="stat-n g" id="s-have">0</div><div class="stat-l">Tenho</div></div>
+    <div class="stat-tile"><div class="stat-n r" id="s-miss">0</div><div class="stat-l">Faltam</div></div>
+    <div class="stat-tile"><div class="stat-n y" id="s-tot">0</div><div class="stat-l">Total</div></div>
+    <div class="stat-tile" onclick="setMode('dup')" style="cursor:pointer"><div class="stat-n o" id="s-dup">0</div><div class="stat-l">Repet.</div></div>
+  </div>
+
+  <div class="controls-bar" id="main-controls">
+    <input class="search-inp" id="search" placeholder="🔍 Buscar seleção..." oninput="renderGroups()">
+    <div class="chip" id="chip-miss" onclick="toggleFilter('miss')">Faltam</div>
+    <div class="chip" id="chip-have" onclick="toggleFilter('have')">Tenho</div>
+  </div>
+
+  <div class="content-area" id="content-area"></div>
+
+  <div class="bottom-bar">
+    <button class="bb-btn danger" onclick="signOut()"><span class="icon">🚪</span>Sair</button>
+    <button class="bb-btn" onclick="showShareModal()"><span class="icon">🔗</span>Compartilhar</button>
+    <button class="bb-btn primary" onclick="showCompareModal()"><span class="icon">🔄</span>Comparar</button>
+  </div>
+</div>
+
+<!-- PERFIL PÚBLICO (readonly) -->
+<div id="public-profile" style="display:none;flex-direction:column">
+  <div class="pub-header">
+    <div class="pub-avatar-row">
+      <img class="pub-avatar" id="pub-photo" src="" alt="" onerror="this.style.display='none'">
+      <div>
+        <div class="pub-name" id="pub-name">—</div>
+        <div class="pub-sub" id="pub-sub">Álbum Copa 2026</div>
+        <div class="pub-readonly-badge">👁 Somente leitura</div>
+      </div>
+    </div>
+    <div class="topbar-progress">
+      <div class="progress-meta"><span>Progresso</span><span id="pub-prog-text">0 / 0</span></div>
+      <div class="bar-track"><div class="bar-fill" id="pub-prog-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="mode-tabs" style="margin-top:10px">
+    <div class="mode-tab active" id="pub-mode-normal" onclick="setPubMode('normal')">📋 Álbum</div>
+    <div class="mode-tab" id="pub-mode-dup" onclick="setPubMode('dup')">🔁 Repetidas</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-tile"><div class="stat-n g" id="pub-s-have">0</div><div class="stat-l">Tem</div></div>
+    <div class="stat-tile"><div class="stat-n r" id="pub-s-miss">0</div><div class="stat-l">Falta</div></div>
+    <div class="stat-tile"><div class="stat-n y" id="pub-s-tot">0</div><div class="stat-l">Total</div></div>
+    <div class="stat-tile"><div class="stat-n o" id="pub-s-dup">0</div><div class="stat-l">Repet.</div></div>
+  </div>
+
+  <div class="content-area" id="pub-content-area" style="padding-bottom:30px"></div>
+</div>
+
+<!-- MODAL SHARE -->
+<div class="modal-bg" id="modal-share">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔗 Compartilhar Álbum</div>
+    <div class="modal-sub">Envie este link para seus amigos. Eles poderão ver seu álbum e suas repetidas, mas <strong>não conseguirão editar nada</strong>.</div>
+    <div class="share-link-box">
+      <span class="share-link-text" id="share-link-text">—</span>
+      <button class="share-copy-btn" onclick="copyShareLink()">Copiar</button>
+    </div>
+    <button class="btn btn-gold btn-full" onclick="nativeShare()">📤 Compartilhar via...</button>
+    <button class="btn btn-outline btn-full" onclick="closeModal('modal-share')">Fechar</button>
+  </div>
+</div>
+
+<!-- MODAL COMPARE -->
+<div class="modal-bg" id="modal-compare">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔄 Comparar Álbum</div>
+    <div class="modal-sub">Cole o link público do álbum de um amigo para comparar o que cada um tem.</div>
+    <div style="margin-bottom:12px">
+      <div class="dup-form-label" style="margin-bottom:6px">LINK DO ÁLBUM DO AMIGO</div>
+      <input id="compare-link-input" class="search-inp" style="width:100%" placeholder="https://seusite.com/perfil/...">
+    </div>
+    <button class="btn btn-gold btn-full" onclick="loadCompareFromLink()">Carregar e Comparar</button>
+    <button class="btn btn-outline btn-full" onclick="closeModal('modal-compare')">Cancelar</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+// ─────────────────────────────────────────
+//  🔧 COLE SUAS CREDENCIAIS DO FIREBASE AQUI
+// ─────────────────────────────────────────
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBWIzII8TGMLllvs1JDZqK7bVrKhRQe_Mc",
+  authDomain: "figurinhascopa-bb95d.firebaseapp.com",
+  projectId: "figurinhascopa-bb95d",
+  storageBucket: "figurinhascopa-bb95d.firebasestorage.app",
+  messagingSenderId: "446600338818",
+  appId: "1:446600338818:web:b97b4094ee66e44fa1039b"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+// ─────────────────────────────────────────
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Expõe pra funções globais
+window._auth = auth;
+window._db = db;
+window._fbSignOut = fbSignOut;
+window._GoogleAuthProvider = GoogleAuthProvider;
+window._signInWithPopup = signInWithPopup;
+window._doc = doc;
+window._getDoc = getDoc;
+window._setDoc = setDoc;
+window._onSnapshot = onSnapshot;
+
+// ── Detecta modo: perfil público ou app normal ──
+const urlPath = window.location.pathname;
+const publicMatch = urlPath.match(/^\/perfil\/(.+)$/);
+
+if (publicMatch) {
+  // MODO PÚBLICO — carrega dados do usuário pelo UID
+  window._publicUid = publicMatch[1];
+  document.getElementById('loading-screen').style.display = 'flex';
+  loadPublicProfile(publicMatch[1]);
+} else {
+  // MODO NORMAL — verifica login
+  onAuthStateChanged(auth, user => {
+    document.getElementById('loading-screen').style.display = 'none';
+    if (user) {
+      window._currentUser = user;
+      startApp(user);
+    } else {
+      document.getElementById('login-screen').style.display = 'flex';
+    }
+  });
+}
+
+async function loadPublicProfile(uid) {
+  try {
+    const ref = doc(db, 'users', uid);
+    const snap = await getDoc(ref);
+    document.getElementById('loading-screen').style.display = 'none';
+    if (!snap.exists()) {
+      document.getElementById('loading-screen').innerHTML = '<div class="loading-title" style="color:var(--c-red)">Perfil não encontrado</div><div class="loading-sub">O link pode estar incorreto</div>';
+      document.getElementById('loading-screen').style.display = 'flex';
+      return;
+    }
+    const data = snap.data();
+    window._publicData = data;
+    renderPublicProfile(data);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('loading-screen').innerHTML = '<div class="loading-title" style="color:var(--c-red)">Erro ao carregar</div><div class="loading-sub">Tente novamente</div>';
+  }
+}
+
+window._loadPublicProfile = loadPublicProfile;
+
+function startApp(user) {
+  const nameEl = document.getElementById('app-name');
+  const photoEl = document.getElementById('app-photo');
+  const phEl = document.getElementById('app-avatar-ph');
+  nameEl.textContent = user.displayName?.split(' ')[0] || 'Usuário';
+  if (user.photoURL) { photoEl.src = user.photoURL; photoEl.style.display = 'block'; phEl.style.display = 'none'; }
+  else { phEl.textContent = (user.displayName||'U')[0]; phEl.style.display = 'flex'; photoEl.style.display = 'none'; }
+
+  // Share link
+  const shareUrl = `${window.location.origin}/perfil/${user.uid}`;
+  document.getElementById('share-link-text').textContent = shareUrl;
+  window._shareUrl = shareUrl;
+
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('login-screen').style.display = 'none';
+
+  // Carrega dados em tempo real
+  const ref = doc(db, 'users', user.uid);
+  window._userRef = ref;
+
+  onSnapshot(ref, snap => {
+    if (snap.exists()) {
+      const data = snap.data();
+      window._stickers = data.stickers || {};
+      window._duplicates = data.duplicates || {};
+    } else {
+      window._stickers = {};
+      window._duplicates = {};
+    }
+    updateStats();
+    renderGroups();
+  });
+}
+
+window.signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider();
+  try { await signInWithPopup(auth, provider); }
+  catch(e) { showToast('Erro ao entrar. Tente novamente.', 'err'); }
+};
+
+window.signOut = async () => {
+  await fbSignOut(auth);
+  window._stickers = {};
+  window._duplicates = {};
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+};
+
+// Salva com debounce
+let saveTimer;
+window._scheduleSave = () => {
+  const ind = document.getElementById('save-indicator');
+  ind.textContent = '💾 Salvando...';
+  ind.className = 'save-indicator saving';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      await setDoc(window._userRef, {
+        name: window._currentUser?.displayName || '',
+        photo: window._currentUser?.photoURL || '',
+        stickers: window._stickers || {},
+        duplicates: window._duplicates || {},
+        updatedAt: Date.now()
+      }, { merge: true });
+      ind.textContent = '✓ Salvo';
+      ind.className = 'save-indicator saved';
+      setTimeout(() => { ind.className = 'save-indicator'; }, 2000);
+    } catch(e) {
+      ind.className = 'save-indicator';
+      showToast('Erro ao salvar', 'err');
+    }
+  }, 800);
+};
+</script>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+const GRUPOS = [
+  {letra:'A',times:[{nome:'México',cod:'MEX'},{nome:'África do Sul',cod:'RSA'},{nome:'Coreia do Sul',cod:'KOR'},{nome:'Rep. Tcheca',cod:'CZE'}]},
+  {letra:'B',times:[{nome:'Canadá',cod:'CAN'},{nome:'Bósnia',cod:'BIH'},{nome:'Catar',cod:'QAT'},{nome:'Suíça',cod:'SUI'}]},
+  {letra:'C',times:[{nome:'Brasil',cod:'BRA'},{nome:'Marrocos',cod:'MAR'},{nome:'Haiti',cod:'HAI'},{nome:'Escócia',cod:'SCO'}]},
+  {letra:'D',times:[{nome:'Estados Unidos',cod:'USA'},{nome:'Paraguai',cod:'PAR'},{nome:'Austrália',cod:'AUS'},{nome:'Turquia',cod:'TUR'}]},
+  {letra:'E',times:[{nome:'Alemanha',cod:'GER'},{nome:'Curaçao',cod:'CUW'},{nome:'Costa do Marfim',cod:'CIV'},{nome:'Equador',cod:'ECU'}]},
+  {letra:'F',times:[{nome:'Holanda',cod:'NED'},{nome:'Japão',cod:'JPN'},{nome:'Suécia',cod:'SWE'},{nome:'Tunísia',cod:'TUN'}]},
+  {letra:'G',times:[{nome:'Bélgica',cod:'BEL'},{nome:'Egito',cod:'EGY'},{nome:'Irã',cod:'IRN'},{nome:'Nova Zelândia',cod:'NZL'}]},
+  {letra:'H',times:[{nome:'Espanha',cod:'ESP'},{nome:'Cabo Verde',cod:'CPV'},{nome:'Arábia Saudita',cod:'KSA'},{nome:'Uruguai',cod:'URU'}]},
+  {letra:'I',times:[{nome:'França',cod:'FRA'},{nome:'Senegal',cod:'SEN'},{nome:'Iraque',cod:'IRQ'},{nome:'Noruega',cod:'NOR'}]},
+  {letra:'J',times:[{nome:'Argentina',cod:'ARG'},{nome:'Argélia',cod:'ALG'},{nome:'Áustria',cod:'AUT'},{nome:'Jordânia',cod:'JOR'}]},
+  {letra:'K',times:[{nome:'Portugal',cod:'POR'},{nome:'Congo',cod:'COD'},{nome:'Uzbequistão',cod:'UZB'},{nome:'Colômbia',cod:'COL'}]},
+  {letra:'L',times:[{nome:'Inglaterra',cod:'ENG'},{nome:'Croácia',cod:'CRO'},{nome:'Gana',cod:'GHA'},{nome:'Panamá',cod:'PAN'}]},
+];
+const ESPECIAIS = [
+  {secao:'FIFA World Cup History',cod:'FWC',letra:'FWC',items:['9','10','11','12','13','14','15','16','17','18','19'],prefix:'FWC-'},
+  {secao:'Figurinhas Coca-Cola',cod:'CC',letra:'CC',items:['CC1','CC2','CC3','CC4','CC5','CC6','CC7','CC8','CC9','CC10','CC11','CC12','CC13','CC14'],prefix:''},
+];
+const NUMS = Array.from({length:20},(_,i)=>i+1);
+
+function allIds() {
+  const ids=[];
+  GRUPOS.forEach(g=>g.times.forEach(t=>NUMS.forEach(n=>ids.push(t.cod+'-'+n))));
+  ESPECIAIS.forEach(e=>e.items.forEach(it=>ids.push(e.prefix?e.prefix+it:it)));
+  return ids;
+}
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+window._stickers = {};
+window._duplicates = {};
+let openGroups = new Set();
+let filterMode = null;
+let viewMode = 'normal';
+let pubMode = 'normal';
+let compareData = null;
+
+// ═══════════════════════════════════════
+//  STICKER TOGGLE
+// ═══════════════════════════════════════
+function toggleSticker(id) {
+  window._stickers[id] = !window._stickers[id];
+  if (!window._stickers[id]) delete window._stickers[id];
+  window._scheduleSave();
+  const el = document.getElementById('stk-'+id);
+  if (el) {
+    if (window._stickers[id]) el.classList.add('have'); else el.classList.remove('have');
+    if (el.querySelector('span')) el.querySelector('span').style.display = window._stickers[id] ? 'none' : '';
+  }
+  updateStats();
+  updateGroupProgress();
+}
+
+function setAllTeam(cod, val) {
+  NUMS.forEach(n => {
+    if (val) window._stickers[cod+'-'+n] = true;
+    else delete window._stickers[cod+'-'+n];
+  });
+  window._scheduleSave();
+  NUMS.forEach(n => {
+    const el = document.getElementById('stk-'+cod+'-'+n);
+    if (el) { el.classList.toggle('have', val); if (el.querySelector('span')) el.querySelector('span').style.display = val ? 'none' : ''; }
+  });
+  const have = val ? 20 : 0;
+  const tc = document.getElementById('tc-'+cod);
+  const tpf = document.getElementById('tpf-'+cod);
+  if (tc) tc.textContent = have+'/20';
+  if (tpf) tpf.style.width = (have/20*100)+'%';
+  updateStats();
+  updateGroupProgress();
+}
+
+// ═══════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════
+function updateStats() {
+  const ids = allIds();
+  const have = ids.filter(id => window._stickers[id]).length;
+  const total = ids.length;
+  const pct = total > 0 ? Math.round(have/total*100) : 0;
+  document.getElementById('s-have').textContent = have;
+  document.getElementById('s-miss').textContent = total-have;
+  document.getElementById('s-tot').textContent = total;
+  document.getElementById('prog-text').textContent = have+' / '+total;
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('app-pct').textContent = pct+'%';
+  const dupTotal = Object.values(window._duplicates).reduce((a,b)=>a+(b||0),0);
+  document.getElementById('s-dup').textContent = dupTotal;
+}
+
+function updateGroupProgress() {
+  GRUPOS.forEach(g => {
+    let tot=0,have=0;
+    g.times.forEach(t => {
+      const th = NUMS.filter(n=>window._stickers[t.cod+'-'+n]).length;
+      tot+=20; have+=th;
+      const tc=document.getElementById('tc-'+t.cod);
+      const tpf=document.getElementById('tpf-'+t.cod);
+      if(tc) tc.textContent=th+'/20';
+      if(tpf) tpf.style.width=Math.round(th/20*100)+'%';
+    });
+    const el=document.getElementById('gc-'+g.letra);
+    const fill=document.getElementById('gf-'+g.letra);
+    if(el) el.textContent=have+'/'+tot;
+    if(fill) fill.style.width=(tot>0?Math.round(have/tot*100):0)+'%';
+    const card=document.getElementById('grp-'+g.letra);
+    if(card){if(have===tot)card.classList.add('full');else card.classList.remove('full');}
+  });
+}
+
+// ═══════════════════════════════════════
+//  MODE
+// ═══════════════════════════════════════
+function setMode(mode) {
+  viewMode = mode;
+  ['normal','dup','falta'].forEach(m => document.getElementById('mode-'+m).classList.toggle('active', m===mode));
+  const ctrl = document.getElementById('main-controls');
+  ctrl.style.display = mode === 'normal' ? 'flex' : 'none';
+  renderGroups();
+}
+
+// ═══════════════════════════════════════
+//  FILTERS
+// ═══════════════════════════════════════
+function toggleFilter(mode) {
+  filterMode = filterMode === mode ? null : mode;
+  document.getElementById('chip-miss').classList.toggle('on', filterMode==='miss');
+  document.getElementById('chip-have').classList.toggle('on', filterMode==='have');
+  renderGroups();
+}
+
+// ═══════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════
+function renderGroups() {
+  if (viewMode === 'falta') { renderSummaryMode(); return; }
+  if (viewMode === 'dup') { renderDupMode(); return; }
+
+  const area = document.getElementById('content-area');
+  const search = document.getElementById('search').value.toLowerCase().trim();
+  const stk = window._stickers;
+  const cmp = compareData;
+  area.innerHTML = '';
+  let anyShown = false;
+  let delay = 0;
+
+  GRUPOS.forEach(g => {
+    const filteredTimes = g.times.filter(t => {
+      if (search && !t.nome.toLowerCase().includes(search) && !t.cod.toLowerCase().includes(search)) return false;
+      if (filterMode==='have') return NUMS.some(n=>stk[t.cod+'-'+n]);
+      if (filterMode==='miss') return NUMS.some(n=>!stk[t.cod+'-'+n]);
+      return true;
+    });
+    if (!filteredTimes.length) return;
+    anyShown = true;
+    let tot=0,have=0;
+    g.times.forEach(t=>NUMS.forEach(n=>{tot++;if(stk[t.cod+'-'+n])have++;}));
+    const pct=tot>0?Math.round(have/tot*100):0;
+    const isOpen=openGroups.has(g.letra)||search.length>0;
+    const card = document.createElement('div');
+    card.className='group-card'+(have===tot?' full':'');
+    card.id='grp-'+g.letra;
+    card.style.animationDelay=delay+'ms'; delay+=40;
+    card.innerHTML=`
+      <div class="group-head" onclick="toggleGroup('${g.letra}')">
+        <div class="group-letter">G${g.letra}</div>
+        <div class="group-meta">
+          <div class="group-title">GRUPO ${g.letra}</div>
+          <div class="group-teams-list">${filteredTimes.map(t=>t.nome).join(' · ')}</div>
+        </div>
+        <div class="group-right">
+          <div><div class="group-count" id="gc-${g.letra}">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" id="gf-${g.letra}" style="width:${pct}%"></div></div></div>
+          <div class="chevron${isOpen?' open':''}" id="ch-${g.letra}">▼</div>
+        </div>
+      </div>
+      <div class="team-section${isOpen?' open':''}" id="ts-${g.letra}">
+        ${filteredTimes.map(t=>renderTeamHTML(t,stk,cmp)).join('')}
+      </div>`;
+    area.appendChild(card);
+  });
+
+  // Especiais
+  ESPECIAIS.forEach(e=>{
+    const have=e.items.filter(it=>stk[e.prefix?e.prefix+it:it]).length;
+    const tot=e.items.length;
+    const pct=tot>0?Math.round(have/tot*100):0;
+    const isOpen=openGroups.has('sp-'+e.cod)||document.getElementById('search').value.length>0;
+    const card=document.createElement('div');
+    card.className='group-card';
+    card.style.animationDelay=delay+'ms'; delay+=40;
+    card.innerHTML=`
+      <div class="group-head" onclick="toggleGroup('sp-${e.cod}')">
+        <div class="group-letter sp">${e.letra}</div>
+        <div class="group-meta"><div class="group-title">${e.secao}</div><div class="group-teams-list">${tot} figurinhas especiais</div></div>
+        <div class="group-right">
+          <div><div class="group-count" id="gc-sp-${e.cod}">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" id="gf-sp-${e.cod}" style="width:${pct}%"></div></div></div>
+          <div class="chevron${isOpen?' open':''}" id="ch-sp-${e.cod}">▼</div>
+        </div>
+      </div>
+      <div class="team-section${isOpen?' open':''}" id="ts-sp-${e.cod}">
+        <div class="team-row">
+          <div class="quick-actions">
+            <button class="qa-btn ga" onclick="setAllSpecial(${JSON.stringify(e)},true)">✓ Marcar todos</button>
+            <button class="qa-btn ra" onclick="setAllSpecial(${JSON.stringify(e)},false)">✗ Desmarcar</button>
+          </div>
+          <div class="sticker-grid">
+            ${e.items.map(it=>{const id=e.prefix?e.prefix+it:it;const label=e.prefix?it:it.replace('CC','');const has=stk[id];return`<div class="stk sp-stk${has?' have':''}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${label}</span></div>`;}).join('')}
+          </div>
+        </div>
+      </div>`;
+    area.appendChild(card);
+    anyShown=true;
+  });
+
+  if (!anyShown) area.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--c-text3);font-size:14px">🔍 Nenhuma seleção encontrada</div>';
+}
+
+function renderTeamHTML(t, stk, cmp) {
+  const have=NUMS.filter(n=>stk[t.cod+'-'+n]).length;
+  const pct=Math.round(have/20*100);
+  const stickersHTML=NUMS.map(n=>{
+    const id=t.cod+'-'+n;
+    const iHave=stk[id]; const friendHas=cmp?.[id];
+    let cls='stk';
+    if(iHave&&friendHas) cls+=' both-have';
+    else if(iHave) cls+=' have';
+    else if(friendHas) cls+=' friend-has';
+    return`<div class="${cls}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${n}</span></div>`;
+  }).join('');
+  return`<div class="team-row">
+    <div class="team-head">
+      <div class="team-identity"><span class="team-flag-code">${t.cod}</span><span class="team-name">${t.nome}</span></div>
+      <span class="team-count-badge" id="tc-${t.cod}">${have}/20</span>
+    </div>
+    <div class="team-prog-bar"><div class="team-prog-fill" id="tpf-${t.cod}" style="width:${pct}%"></div></div>
+    <div class="quick-actions" style="margin-top:10px">
+      <button class="qa-btn ga" onclick="setAllTeam('${t.cod}',true)">✓ Marcar todos</button>
+      <button class="qa-btn ra" onclick="setAllTeam('${t.cod}',false)">✗ Desmarcar</button>
+    </div>
+    <div class="sticker-grid">${stickersHTML}</div>
+  </div>`;
+}
+
+function setAllSpecial(e, val) {
+  e.items.forEach(it=>{const id=e.prefix?e.prefix+it:it;if(val)window._stickers[id]=true;else delete window._stickers[id];});
+  window._scheduleSave();
+  renderGroups();
+  updateStats();
+}
+
+function toggleGroup(key) {
+  if(openGroups.has(key))openGroups.delete(key);else openGroups.add(key);
+  const isOpen=openGroups.has(key);
+  const ts=document.getElementById('ts-'+key);
+  const ch=document.getElementById('ch-'+key);
+  if(ts)ts.classList.toggle('open',isOpen);
+  if(ch)ch.classList.toggle('open',isOpen);
+}
+
+// ═══════════════════════════════════════
+//  SUMMARY MODE
+// ═══════════════════════════════════════
+function renderSummaryMode() {
+  const area = document.getElementById('content-area');
+  const stk = window._stickers;
+  area.innerHTML = GRUPOS.map(g=>{
+    const times=g.times.map(t=>{const have=NUMS.filter(n=>stk[t.cod+'-'+n]).length;return{...t,have};});
+    const gHave=times.reduce((a,t)=>a+t.have,0),gTotal=g.times.length*20;
+    const pct=Math.round(gHave/gTotal*100);
+    return`<div class="group-card" style="margin-bottom:10px">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--c-border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px"><div class="group-letter" style="width:30px;height:30px;font-size:14px;border-radius:8px">G${g.letra}</div><span style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px">Grupo ${g.letra}</span></div>
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:${gHave===gTotal?'var(--c-green)':'var(--c-gold)'}">${gHave}/${gTotal}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${gHave===gTotal?'var(--c-green)':''}"></div></div>
+      </div>
+      <div style="padding:4px 14px">
+        ${times.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--c-border)">
+          <span class="team-flag-code">${t.cod}</span>
+          <span style="flex:1;font-size:12px;color:var(--c-text2)">${t.nome}</span>
+          <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:${t.have===20?'var(--c-green)':t.have===0?'var(--c-text3)':'var(--c-text)'}">${t.have}/20</span>
+          <div style="width:40px;height:4px;background:var(--c-border);border-radius:2px;overflow:hidden"><div style="height:100%;width:${t.have/20*100}%;background:${t.have===20?'var(--c-green)':'var(--c-gold)'};border-radius:2px"></div></div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  DUPLICATES MODE
+// ═══════════════════════════════════════
+function renderDupMode() {
+  const area = document.getElementById('content-area');
+  const dups = window._duplicates;
+  const allTimes = [];
+  GRUPOS.forEach(g=>g.times.forEach(t=>allTimes.push({cod:t.cod,nome:t.nome,grupo:g.letra})));
+  const totalDups = Object.values(dups).reduce((a,b)=>a+(b||0),0);
+
+  let html = `<div class="dup-form-card">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:4px">Cadastrar repetida</div>
+    <div style="font-size:12px;color:var(--c-text3);margin-bottom:14px">Escolha o país, número e confirme</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div>
+        <div class="dup-form-label">PAÍS</div>
+        <select id="dup-country" class="dup-select">
+          <option value="">Selecione o país...</option>
+          ${allTimes.map(t=>`<option value="${t.cod}">Grupo ${t.grupo} · ${t.cod} · ${t.nome}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <div class="dup-form-label">Nº DA FIGURINHA (1–20)</div>
+        <div class="dup-num-row">
+          <input id="dup-num" type="number" min="1" max="20" class="dup-num-inp" placeholder="Ex: 7" onkeydown="if(event.key==='Enter')confirmAddDup()">
+          <button class="dup-add-btn" onclick="confirmAddDup()">+ Adicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px 10px">
+    <div>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--c-gold)" id="dup-total-hdr">${totalDups}</span>
+      <span style="font-size:12px;color:var(--c-text3);margin-left:6px">figurinhas repetidas</span>
+    </div>
+    ${totalDups>0?`<button onclick="clearAllDups()" style="background:transparent;border:1px solid var(--c-red-dim);color:var(--c-red);border-radius:6px;padding:5px 10px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer">Limpar tudo</button>`:''}
+  </div>
+  <div id="dup-list" style="display:flex;flex-direction:column;gap:7px">`;
+
+  if (totalDups === 0) {
+    html += `<div style="text-align:center;padding:28px 16px;color:var(--c-text3);font-size:13px;font-family:'Syne',sans-serif"><div style="font-size:32px;margin-bottom:8px">🔁</div>Nenhuma repetida cadastrada</div>`;
+  } else {
+    const grouped = {};
+    Object.entries(dups).forEach(([id,count])=>{if(!count)return;const[cod]=id.split('-');if(!grouped[cod])grouped[cod]=[];grouped[cod].push({id,count});});
+    allTimes.forEach(t=>{
+      if(!grouped[t.cod])return;
+      grouped[t.cod].sort((a,b)=>parseInt(a.id.split('-')[1])-parseInt(b.id.split('-')[1]));
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 2px 2px">
+        <span class="team-flag-code">${t.cod}</span>
+        <span style="font-size:12px;font-weight:600;color:var(--c-text2)">${t.nome}</span>
+        <span style="font-size:11px;color:var(--c-text3);margin-left:auto">Grupo ${t.grupo}</span>
+      </div>`;
+      grouped[t.cod].forEach(({id,count})=>{
+        const num=id.split('-')[1];
+        html+=`<div class="dup-item" id="dupcard-${id}">
+          <div class="dup-num-badge">${num}</div>
+          <div style="flex:1"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px">Figurinha Nº ${num}</div><div style="font-size:11px;color:var(--c-text3);margin-top:1px">repetida ${count}×</div></div>
+          <div class="dup-counter">
+            <button class="dup-counter-btn minus" onclick="dupAdjust('${id}',-1)">−</button>
+            <span class="dup-counter-num" id="dupnum-${id}">${count}</span>
+            <button class="dup-counter-btn plus" onclick="dupAdjust('${id}',+1)">+</button>
+          </div>
+        </div>`;
+      });
+    });
+  }
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function dupAdjust(id, delta) {
+  const cur = window._duplicates[id] || 0;
+  const next = Math.max(0, Math.min(99, cur + delta));
+  if (next === 0) delete window._duplicates[id]; else window._duplicates[id] = next;
+  window._scheduleSave();
+  document.getElementById('s-dup').textContent = Object.values(window._duplicates).reduce((a,b)=>a+(b||0),0);
+  if (next === 0) renderDupMode();
+  else { const el=document.getElementById('dupnum-'+id); if(el)el.textContent=next; const hdr=document.getElementById('dup-total-hdr'); if(hdr)hdr.textContent=Object.values(window._duplicates).reduce((a,b)=>a+(b||0),0); }
+}
+
+function confirmAddDup() {
+  const cod = document.getElementById('dup-country')?.value;
+  const numRaw = document.getElementById('dup-num')?.value;
+  if (!cod) { showToast('Escolha um país!'); return; }
+  const num = parseInt(numRaw);
+  if (!num || num < 1 || num > 20) { showToast('Número inválido! (1–20)'); return; }
+  const id = cod+'-'+num;
+  const cur = window._duplicates[id] || 0;
+  window._duplicates[id] = cur + 1;
+  window._scheduleSave();
+  document.getElementById('dup-num').value = '';
+  document.getElementById('dup-num').focus();
+  renderDupMode();
+  updateStats();
+  showToast(`+1 · ${cod} Nº${num}`, 'success');
+}
+
+function clearAllDups() {
+  window._duplicates = {};
+  window._scheduleSave();
+  updateStats();
+  renderDupMode();
+}
+
+// ═══════════════════════════════════════
+//  PUBLIC PROFILE RENDER
+// ═══════════════════════════════════════
+function renderPublicProfile(data) {
+  document.getElementById('public-profile').style.display = 'flex';
+  document.getElementById('pub-name').textContent = data.name?.split(' ')[0] || 'Usuário';
+  const photoEl = document.getElementById('pub-photo');
+  if (data.photo) { photoEl.src = data.photo; photoEl.style.display = 'block'; } else photoEl.style.display = 'none';
+
+  const stk = data.stickers || {};
+  const dups = data.duplicates || {};
+  const ids = allIds();
+  const have = ids.filter(id=>stk[id]).length;
+  const total = ids.length;
+  const pct = total > 0 ? Math.round(have/total*100) : 0;
+  const dupTotal = Object.values(dups).reduce((a,b)=>a+(b||0),0);
+
+  document.getElementById('pub-sub').textContent = `${pct}% completo · Copa 2026`;
+  document.getElementById('pub-prog-text').textContent = `${have} / ${total}`;
+  document.getElementById('pub-prog-fill').style.width = pct+'%';
+  document.getElementById('pub-s-have').textContent = have;
+  document.getElementById('pub-s-miss').textContent = total-have;
+  document.getElementById('pub-s-tot').textContent = total;
+  document.getElementById('pub-s-dup').textContent = dupTotal;
+
+  renderPublicAlbum(stk);
+}
+
+function setPubMode(mode) {
+  pubMode = mode;
+  ['normal','dup'].forEach(m=>document.getElementById('pub-mode-'+m).classList.toggle('active',m===mode));
+  const data = window._publicData;
+  if (!data) return;
+  if (mode === 'normal') renderPublicAlbum(data.stickers||{});
+  else renderPublicDups(data.duplicates||{});
+}
+
+function renderPublicAlbum(stk) {
+  const area = document.getElementById('pub-content-area');
+  area.innerHTML = '';
+  let delay = 0;
+  GRUPOS.forEach(g=>{
+    let tot=0,have=0;
+    g.times.forEach(t=>NUMS.forEach(n=>{tot++;if(stk[t.cod+'-'+n])have++;}));
+    const pct=tot>0?Math.round(have/tot*100):0;
+    const card=document.createElement('div');
+    card.className='group-card'+(have===tot?' full':'');
+    card.style.animationDelay=delay+'ms'; delay+=30;
+    card.innerHTML=`
+      <div class="group-head" onclick="pubToggleGroup('${g.letra}')">
+        <div class="group-letter">G${g.letra}</div>
+        <div class="group-meta"><div class="group-title">GRUPO ${g.letra}</div><div class="group-teams-list">${g.times.map(t=>t.nome).join(' · ')}</div></div>
+        <div class="group-right">
+          <div><div class="group-count">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" style="width:${pct}%"></div></div></div>
+          <div class="chevron" id="pub-ch-${g.letra}">▼</div>
+        </div>
+      </div>
+      <div class="team-section" id="pub-ts-${g.letra}">
+        ${g.times.map(t=>{
+          const th=NUMS.filter(n=>stk[t.cod+'-'+n]).length;
+          const stickersHTML=NUMS.map(n=>{const id=t.cod+'-'+n;return`<div class="stk readonly${stk[id]?' have':''}" title="Nº ${n}"><span>${n}</span></div>`;}).join('');
+          return`<div class="team-row">
+            <div class="team-head"><div class="team-identity"><span class="team-flag-code">${t.cod}</span><span class="team-name">${t.nome}</span></div><span class="team-count-badge">${th}/20</span></div>
+            <div class="team-prog-bar"><div class="team-prog-fill" style="width:${Math.round(th/20*100)}%"></div></div>
+            <div class="sticker-grid" style="margin-top:10px">${stickersHTML}</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    area.appendChild(card);
+  });
+}
+
+function pubToggleGroup(key) {
+  const ts=document.getElementById('pub-ts-'+key);
+  const ch=document.getElementById('pub-ch-'+key);
+  if(ts)ts.classList.toggle('open');
+  if(ch)ch.classList.toggle('open');
+}
+
+function renderPublicDups(dups) {
+  const area = document.getElementById('pub-content-area');
+  const allTimes=[];
+  GRUPOS.forEach(g=>g.times.forEach(t=>allTimes.push({cod:t.cod,nome:t.nome,grupo:g.letra})));
+  const totalDups=Object.values(dups).reduce((a,b)=>a+(b||0),0);
+
+  if (totalDups === 0) {
+    area.innerHTML='<div style="text-align:center;padding:48px 20px;color:var(--c-text3)"><div style="font-size:36px;margin-bottom:10px">🔁</div><div style="font-size:14px">Nenhuma repetida cadastrada</div></div>';
+    return;
+  }
+
+  let html=`<div style="padding:8px 0 12px"><span style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:22px;color:var(--c-gold)">${totalDups}</span><span style="font-size:12px;color:var(--c-text3);margin-left:8px">figurinhas repetidas disponíveis para troca</span></div><div style="display:flex;flex-direction:column;gap:7px">`;
+  const grouped={};
+  Object.entries(dups).forEach(([id,count])=>{if(!count)return;const[cod]=id.split('-');if(!grouped[cod])grouped[cod]=[];grouped[cod].push({id,count});});
+  allTimes.forEach(t=>{
+    if(!grouped[t.cod])return;
+    grouped[t.cod].sort((a,b)=>parseInt(a.id.split('-')[1])-parseInt(b.id.split('-')[1]));
+    html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 2px 2px"><span class="team-flag-code">${t.cod}</span><span style="font-size:12px;font-weight:600;color:var(--c-text2)">${t.nome}</span></div>`;
+    grouped[t.cod].forEach(({id,count})=>{
+      const num=id.split('-')[1];
+      html+=`<div class="dup-item">
+        <div class="dup-num-badge">${num}</div>
+        <div style="flex:1"><div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:13px">Figurinha Nº ${num}</div><div style="font-size:11px;color:var(--c-text3)">tem ${count} para trocar</div></div>
+        <div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:20px;color:var(--c-gold)">×${count}</div>
+      </div>`;
+    });
+  });
+  html+='</div>';
+  area.innerHTML=html;
+}
+
+// ═══════════════════════════════════════
+//  SHARE & COMPARE
+// ═══════════════════════════════════════
+function showShareModal() {
+  openModal('modal-share');
+}
+
+function copyShareLink() {
+  navigator.clipboard.writeText(window._shareUrl||'').then(()=>showToast('Link copiado!','success')).catch(()=>{});
+}
+
+function nativeShare() {
+  if (navigator.share) {
+    navigator.share({ title: 'Meu Álbum Copa 2026', url: window._shareUrl });
+  } else copyShareLink();
+}
+
+async function loadCompareFromLink() {
+  const input = document.getElementById('compare-link-input').value.trim();
+  const match = input.match(/\/perfil\/(.+)$/);
+  if (!match) { showToast('Link inválido!','err'); return; }
+  const uid = match[1].trim();
+  try {
+    const ref = window._doc(window._db, 'users', uid);
+    const snap = await window._getDoc(ref);
+    if (!snap.exists()) { showToast('Perfil não encontrado','err'); return; }
+    compareData = snap.data().stickers || {};
+    closeModal('modal-compare');
+    showToast('Comparando com '+snap.data().name?.split(' ')[0],'success');
+    renderGroups();
+  } catch(e) { showToast('Erro ao carregar perfil','err'); }
+}
+
+// ═══════════════════════════════════════
+//  MODAL / TOAST
+// ═══════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal-bg').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show');});});
+
+let toastTimer;
+function showToast(msg,type){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast'+(type?' '+type:'')+' show';
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/perfil/:uid", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
