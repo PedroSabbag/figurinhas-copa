@@ -644,6 +644,7 @@ const GRUPOS = [
   {letra:'L',times:[{nome:'Inglaterra',cod:'ENG'},{nome:'Croácia',cod:'CRO'},{nome:'Gana',cod:'GHA'},{nome:'Panamá',cod:'PAN'}]},
 ];
 const ESPECIAIS = [
+  {secao:'Página Inicial',cod:'PAG',letra:'PAG',items:['00','1','2','3','4','5','6','7','8'],prefix:'PAG-'},
   {secao:'FIFA World Cup History',cod:'FWC',letra:'FWC',items:['9','10','11','12','13','14','15','16','17','18','19'],prefix:'FWC-'},
   {secao:'Figurinhas Coca-Cola',cod:'CC',letra:'CC',items:['CC1','CC2','CC3','CC4','CC5','CC6','CC7','CC8','CC9','CC10','CC11','CC12','CC13','CC14'],prefix:''},
 ];
@@ -776,6 +777,42 @@ function renderGroups() {
   let anyShown = false;
   let delay = 0;
 
+  function renderEspecialCard(e) {
+    const have=e.items.filter(it=>stk[e.prefix?e.prefix+it:it]).length;
+    const tot=e.items.length;
+    const pct=tot>0?Math.round(have/tot*100):0;
+    const isOpen=openGroups.has('sp-'+e.cod)||search.length>0;
+    const card=document.createElement('div');
+    card.className='group-card';
+    card.style.animationDelay=delay+'ms'; delay+=40;
+    card.innerHTML=`
+      <div class="group-head" onclick="toggleGroup('sp-${e.cod}')">
+        <div class="group-letter sp">${e.letra}</div>
+        <div class="group-meta"><div class="group-title">${e.secao}</div><div class="group-teams-list">${tot} figurinhas especiais</div></div>
+        <div class="group-right">
+          <div><div class="group-count" id="gc-sp-${e.cod}">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" id="gf-sp-${e.cod}" style="width:${pct}%"></div></div></div>
+          <div class="chevron${isOpen?' open':''}" id="ch-sp-${e.cod}">▼</div>
+        </div>
+      </div>
+      <div class="team-section${isOpen?' open':''}" id="ts-sp-${e.cod}">
+        <div class="team-row">
+          <div class="quick-actions">
+            <button class="qa-btn ga" onclick="setAllSpecial(${JSON.stringify(e)},true)">✓ Marcar todos</button>
+            <button class="qa-btn ra" onclick="setAllSpecial(${JSON.stringify(e)},false)">✗ Desmarcar</button>
+          </div>
+          <div class="sticker-grid">
+            ${e.items.map(it=>{const id=e.prefix?e.prefix+it:it;const label=e.prefix?it:it.replace('CC','');const has=stk[id];return`<div class="stk sp-stk${has?' have':''}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${label}</span></div>`;}).join('')}
+          </div>
+        </div>
+      </div>`;
+    area.appendChild(card);
+    anyShown=true;
+  }
+
+  // Página Inicial primeiro
+  const pagInicial = ESPECIAIS.find(e => e.cod === 'PAG');
+  if (pagInicial) renderEspecialCard(pagInicial);
+
   GRUPOS.forEach(g => {
     const filteredTimes = g.times.filter(t => {
       if (search && !t.nome.toLowerCase().includes(search) && !t.cod.toLowerCase().includes(search)) return false;
@@ -820,38 +857,8 @@ function renderGroups() {
     }
   });
 
-  // Especiais
-  ESPECIAIS.forEach(e=>{
-    const have=e.items.filter(it=>stk[e.prefix?e.prefix+it:it]).length;
-    const tot=e.items.length;
-    const pct=tot>0?Math.round(have/tot*100):0;
-    const isOpen=openGroups.has('sp-'+e.cod)||document.getElementById('search').value.length>0;
-    const card=document.createElement('div');
-    card.className='group-card';
-    card.style.animationDelay=delay+'ms'; delay+=40;
-    card.innerHTML=`
-      <div class="group-head" onclick="toggleGroup('sp-${e.cod}')">
-        <div class="group-letter sp">${e.letra}</div>
-        <div class="group-meta"><div class="group-title">${e.secao}</div><div class="group-teams-list">${tot} figurinhas especiais</div></div>
-        <div class="group-right">
-          <div><div class="group-count" id="gc-sp-${e.cod}">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" id="gf-sp-${e.cod}" style="width:${pct}%"></div></div></div>
-          <div class="chevron${isOpen?' open':''}" id="ch-sp-${e.cod}">▼</div>
-        </div>
-      </div>
-      <div class="team-section${isOpen?' open':''}" id="ts-sp-${e.cod}">
-        <div class="team-row">
-          <div class="quick-actions">
-            <button class="qa-btn ga" onclick="setAllSpecial(${JSON.stringify(e)},true)">✓ Marcar todos</button>
-            <button class="qa-btn ra" onclick="setAllSpecial(${JSON.stringify(e)},false)">✗ Desmarcar</button>
-          </div>
-          <div class="sticker-grid">
-            ${e.items.map(it=>{const id=e.prefix?e.prefix+it:it;const label=e.prefix?it:it.replace('CC','');const has=stk[id];return`<div class="stk sp-stk${has?' have':''}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${label}</span></div>`;}).join('')}
-          </div>
-        </div>
-      </div>`;
-    area.appendChild(card);
-    anyShown=true;
-  });
+  // Especiais (exceto Página Inicial que já foi renderizada no topo)
+  ESPECIAIS.filter(e => e.cod !== 'PAG').forEach(e => renderEspecialCard(e));
 
   if (!anyShown) area.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--c-text3);font-size:14px">🔍 Nenhuma seleção encontrada</div>';
 }
