@@ -328,12 +328,6 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
 
   <div class="content-area" id="content-area"></div>
 
-  <div class="bottom-bar">
-    <button class="bb-btn danger" onclick="signOut()"><span class="icon">🚪</span>Sair</button>
-    <button class="bb-btn" onclick="showShareModal()"><span class="icon">🔗</span>Compartilhar</button>
-    <button class="bb-btn primary" onclick="showCompareModal()"><span class="icon">🔄</span>Comparar</button>
-  </div>
-</div>
 
 <!-- PERFIL PÚBLICO (readonly) -->
 <div id="public-profile" style="display:none;flex-direction:column">
@@ -382,20 +376,7 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
   </div>
 </div>
 
-<!-- MODAL COMPARE -->
-<div class="modal-bg" id="modal-compare">
-  <div class="modal-sheet">
-    <div class="modal-handle"></div>
-    <div class="modal-title">🔄 Comparar Álbum</div>
-    <div class="modal-sub">Cole o link público do álbum de um amigo para comparar o que cada um tem.</div>
-    <div style="margin-bottom:12px">
-      <div class="dup-form-label" style="margin-bottom:6px">LINK DO ÁLBUM DO AMIGO</div>
-      <input id="compare-link-input" class="search-inp" style="width:100%" placeholder="https://seusite.com/perfil/...">
-    </div>
-    <button class="btn btn-gold btn-full" onclick="loadCompareFromLink()">Carregar e Comparar</button>
-    <button class="btn btn-outline btn-full" onclick="closeModal('modal-compare')">Cancelar</button>
-  </div>
-</div>
+
 
 <div class="toast" id="toast"></div>
 
