@@ -65,6 +65,18 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
 .google-btn:active { transform: scale(0.98); background: #f5f5f5; }
 .google-icon { width: 20px; height: 20px; }
 .login-disclaimer { font-size: 11px; color: var(--c-text3); text-align: center; margin-top: 16px; line-height: 1.6; }
+.login-divider { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
+.login-divider::before, .login-divider::after { content: ''; flex: 1; height: 1px; background: var(--c-border); }
+.login-divider span { font-size: 11px; color: var(--c-text3); font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 1px; white-space: nowrap; }
+.email-inp { width: 100%; background: var(--c-surface); border: 1px solid var(--c-border); border-radius: 10px; padding: 13px 14px; color: var(--c-text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; margin-bottom: 10px; transition: border-color 0.2s; }
+.email-inp:focus { border-color: var(--c-gold); }
+.email-inp::placeholder { color: var(--c-text3); }
+.email-btn { width: 100%; padding: 13px 20px; border: none; border-radius: 10px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; margin-bottom: 8px; }
+.email-btn.primary { background: var(--c-gold); color: #000; }
+.email-btn.primary:active { transform: scale(0.98); background: var(--c-gold2); }
+.email-btn.secondary { background: transparent; color: var(--c-text2); border: 1px solid var(--c-border); font-size: 13px; padding: 10px; }
+.email-btn.secondary:active { background: var(--c-border); }
+.email-error { font-size: 12px; color: var(--c-red); margin-bottom: 8px; min-height: 16px; text-align: center; }
 
 /* ── APP ── */
 #app { display: none; min-height: 100vh; flex-direction: column; }
@@ -247,22 +259,31 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
   <div class="login-sub">Álbum Digital</div>
   <div class="login-card">
     <div class="login-card-title">Bem-vindo! 👋</div>
-    <div class="login-card-sub">Entre para salvar seu álbum na nuvem.</div>
-
-    <!-- EMAIL/SENHA -->
-    <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-      <input type="email" id="login-email" class="search-inp" placeholder="Seu e-mail" style="width: 100%">
-      <input type="password" id="login-password" class="search-inp" placeholder="Sua senha" style="width: 100%">
-      <button class="btn btn-gold btn-full" onclick="signInWithEmail()" style="margin-top: 5px">Entrar / Cadastrar</button>
-    </div>
-
-    <div style="text-align: center; color: var(--c-text3); font-size: 11px; margin-bottom: 15px;">— OU —</div>
-
+    <div class="login-card-sub">Entre com sua conta Google para salvar seu álbum na nuvem e compartilhar com amigos.</div>
     <button class="google-btn" onclick="signInWithGoogle()">
       <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Entrar com Google
     </button>
     <div class="login-disclaimer">Seus dados ficam salvos na nuvem e só você pode editá-los.<br>Compartilhe seu álbum em modo somente leitura.</div>
+
+    <div class="login-divider"><span>OU ENTRE COM EMAIL</span></div>
+
+    <div id="email-login-form">
+      <input class="email-inp" id="email-inp" type="email" placeholder="Seu e-mail" autocomplete="email">
+      <input class="email-inp" id="pass-inp" type="password" placeholder="Senha" autocomplete="current-password">
+      <div class="email-error" id="email-error"></div>
+      <button class="email-btn primary" onclick="signInWithEmail()">Entrar com E-mail</button>
+      <button class="email-btn secondary" onclick="showRegisterForm()">Criar conta com e-mail</button>
+    </div>
+
+    <div id="email-register-form" style="display:none">
+      <input class="email-inp" id="reg-name-inp" type="text" placeholder="Seu nome" autocomplete="name">
+      <input class="email-inp" id="reg-email-inp" type="email" placeholder="Seu e-mail" autocomplete="email">
+      <input class="email-inp" id="reg-pass-inp" type="password" placeholder="Senha (mín. 6 caracteres)" autocomplete="new-password">
+      <div class="email-error" id="reg-error"></div>
+      <button class="email-btn primary" onclick="registerWithEmail()">Criar Conta</button>
+      <button class="email-btn secondary" onclick="showLoginForm()">← Voltar ao login</button>
+    </div>
   </div>
 </div>
 
@@ -310,6 +331,7 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
   <div class="bottom-bar">
     <button class="bb-btn danger" onclick="signOut()"><span class="icon">🚪</span>Sair</button>
     <button class="bb-btn" onclick="showShareModal()"><span class="icon">🔗</span>Compartilhar</button>
+    <button class="bb-btn primary" onclick="showCompareModal()"><span class="icon">🔄</span>Comparar</button>
   </div>
 </div>
 
@@ -360,18 +382,32 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
   </div>
 </div>
 
+<!-- MODAL COMPARE -->
+<div class="modal-bg" id="modal-compare">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔄 Comparar Álbum</div>
+    <div class="modal-sub">Cole o link público do álbum de um amigo para comparar o que cada um tem.</div>
+    <div style="margin-bottom:12px">
+      <div class="dup-form-label" style="margin-bottom:6px">LINK DO ÁLBUM DO AMIGO</div>
+      <input id="compare-link-input" class="search-inp" style="width:100%" placeholder="https://seusite.com/perfil/...">
+    </div>
+    <button class="btn btn-gold btn-full" onclick="loadCompareFromLink()">Carregar e Comparar</button>
+    <button class="btn btn-outline btn-full" onclick="closeModal('modal-compare')">Cancelar</button>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
 <!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { 
-  getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, 
-  signOut as fbSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword 
-} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
+// ─────────────────────────────────────────
+//  🔧 COLE SUAS CREDENCIAIS DO FIREBASE AQUI
+// ─────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyBWIzII8TGMLllvs1JDZqK7bVrKhRQe_Mc",
   authDomain: "figurinhascopa-bb95d.firebaseapp.com",
@@ -380,51 +416,37 @@ const firebaseConfig = {
   messagingSenderId: "446600338818",
   appId: "1:446600338818:web:b97b4094ee66e44fa1039b"
 };
+// ─────────────────────────────────────────
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Expõe pra funções globais
 window._auth = auth;
 window._db = db;
 window._fbSignOut = fbSignOut;
 window._GoogleAuthProvider = GoogleAuthProvider;
 window._signInWithPopup = signInWithPopup;
+window._createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window._signInWithEmailAndPassword = signInWithEmailAndPassword;
+window._updateProfile = updateProfile;
 window._doc = doc;
 window._getDoc = getDoc;
 window._setDoc = setDoc;
 window._onSnapshot = onSnapshot;
 
-// LOGICA EMAIL/SENHA
-window.signInWithEmail = async () => {
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-
-  if (!email || !password) {
-    showToast('Preencha e-mail e senha', 'err');
-    return;
-  }
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-  } catch (error) {
-    if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        showToast('Conta criada!', 'success');
-      } catch (e) { showToast('Erro: ' + e.message, 'err'); }
-    } else { showToast('Erro: ' + error.message, 'err'); }
-  }
-};
-
+// ── Detecta modo: perfil público ou app normal ──
 const urlPath = window.location.pathname;
 const publicMatch = urlPath.match(/^\/perfil\/(.+)$/);
 
 if (publicMatch) {
+  // MODO PÚBLICO — carrega dados do usuário pelo UID
   window._publicUid = publicMatch[1];
   document.getElementById('loading-screen').style.display = 'flex';
   loadPublicProfile(publicMatch[1]);
 } else {
+  // MODO NORMAL — verifica login
   onAuthStateChanged(auth, user => {
     document.getElementById('loading-screen').style.display = 'none';
     if (user) {
@@ -442,13 +464,17 @@ async function loadPublicProfile(uid) {
     const snap = await getDoc(ref);
     document.getElementById('loading-screen').style.display = 'none';
     if (!snap.exists()) {
-      document.getElementById('loading-screen').innerHTML = '<div class="loading-title" style="color:var(--c-red)">Perfil não encontrado</div>';
+      document.getElementById('loading-screen').innerHTML = '<div class="loading-title" style="color:var(--c-red)">Perfil não encontrado</div><div class="loading-sub">O link pode estar incorreto</div>';
       document.getElementById('loading-screen').style.display = 'flex';
       return;
     }
-    window._publicData = snap.data();
-    renderPublicProfile(window._publicData);
-  } catch(e) { document.getElementById('loading-screen').style.display = 'none'; }
+    const data = snap.data();
+    window._publicData = data;
+    renderPublicProfile(data);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('loading-screen').innerHTML = '<div class="loading-title" style="color:var(--c-red)">Erro ao carregar</div><div class="loading-sub">Tente novamente</div>';
+  }
 }
 
 window._loadPublicProfile = loadPublicProfile;
@@ -457,10 +483,11 @@ function startApp(user) {
   const nameEl = document.getElementById('app-name');
   const photoEl = document.getElementById('app-photo');
   const phEl = document.getElementById('app-avatar-ph');
-  nameEl.textContent = (user.displayName || user.email)?.split(' ')[0] || 'Usuário';
+  nameEl.textContent = user.displayName?.split(' ')[0] || user.email?.split('@')[0] || 'Usuário';
   if (user.photoURL) { photoEl.src = user.photoURL; photoEl.style.display = 'block'; phEl.style.display = 'none'; }
-  else { phEl.textContent = (user.displayName || user.email || 'U')[0].toUpperCase(); phEl.style.display = 'flex'; photoEl.style.display = 'none'; }
+  else { phEl.textContent = (user.displayName||'U')[0]; phEl.style.display = 'flex'; photoEl.style.display = 'none'; }
 
+  // Share link
   const shareUrl = `${window.location.origin}/perfil/${user.uid}`;
   document.getElementById('share-link-text').textContent = shareUrl;
   window._shareUrl = shareUrl;
@@ -468,6 +495,7 @@ function startApp(user) {
   document.getElementById('app').style.display = 'flex';
   document.getElementById('login-screen').style.display = 'none';
 
+  // Carrega dados em tempo real
   const ref = doc(db, 'users', user.uid);
   window._userRef = ref;
 
@@ -488,7 +516,50 @@ function startApp(user) {
 window.signInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   try { await signInWithPopup(auth, provider); }
-  catch(e) { showToast('Erro ao entrar.', 'err'); }
+  catch(e) { showToast('Erro ao entrar. Tente novamente.', 'err'); }
+};
+
+window.signInWithEmail = async () => {
+  const email = document.getElementById('email-inp').value.trim();
+  const pass = document.getElementById('pass-inp').value;
+  const errEl = document.getElementById('email-error');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Preencha e-mail e senha.'; return; }
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    const msgs = { 'auth/user-not-found':'E-mail não cadastrado.', 'auth/wrong-password':'Senha incorreta.', 'auth/invalid-email':'E-mail inválido.', 'auth/invalid-credential':'E-mail ou senha incorretos.' };
+    errEl.textContent = msgs[e.code] || 'Erro ao entrar. Tente novamente.';
+  }
+};
+
+window.registerWithEmail = async () => {
+  const name = document.getElementById('reg-name-inp').value.trim();
+  const email = document.getElementById('reg-email-inp').value.trim();
+  const pass = document.getElementById('reg-pass-inp').value;
+  const errEl = document.getElementById('reg-error');
+  errEl.textContent = '';
+  if (!name) { errEl.textContent = 'Digite seu nome.'; return; }
+  if (!email) { errEl.textContent = 'Digite seu e-mail.'; return; }
+  if (pass.length < 6) { errEl.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; return; }
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    cred.user.displayName = name;
+  } catch(e) {
+    const msgs = { 'auth/email-already-in-use':'Este e-mail já está cadastrado.', 'auth/invalid-email':'E-mail inválido.', 'auth/weak-password':'Senha muito fraca.' };
+    errEl.textContent = msgs[e.code] || 'Erro ao criar conta. Tente novamente.';
+  }
+};
+
+window.showRegisterForm = () => {
+  document.getElementById('email-login-form').style.display = 'none';
+  document.getElementById('email-register-form').style.display = 'block';
+};
+
+window.showLoginForm = () => {
+  document.getElementById('email-register-form').style.display = 'none';
+  document.getElementById('email-login-form').style.display = 'block';
 };
 
 window.signOut = async () => {
@@ -499,6 +570,7 @@ window.signOut = async () => {
   document.getElementById('login-screen').style.display = 'flex';
 };
 
+// Salva com debounce
 let saveTimer;
 window._scheduleSave = () => {
   const ind = document.getElementById('save-indicator');
@@ -508,7 +580,7 @@ window._scheduleSave = () => {
   saveTimer = setTimeout(async () => {
     try {
       await setDoc(window._userRef, {
-        name: window._currentUser?.displayName || window._currentUser?.email || '',
+        name: window._currentUser?.displayName || window._currentUser?.email?.split('@')[0] || '',
         photo: window._currentUser?.photoURL || '',
         stickers: window._stickers || {},
         duplicates: window._duplicates || {},
@@ -517,13 +589,18 @@ window._scheduleSave = () => {
       ind.textContent = '✓ Salvo';
       ind.className = 'save-indicator saved';
       setTimeout(() => { ind.className = 'save-indicator'; }, 2000);
-    } catch(e) { ind.className = 'save-indicator'; }
+    } catch(e) {
+      ind.className = 'save-indicator';
+      showToast('Erro ao salvar', 'err');
+    }
   }, 800);
 };
 </script>
 
 <script>
-// DATA E LÓGICA DO ÁLBUM (MANTIDOS IGUAIS)
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
 const GRUPOS = [
   {letra:'A',times:[{nome:'México',cod:'MEX'},{nome:'África do Sul',cod:'RSA'},{nome:'Coreia do Sul',cod:'KOR'},{nome:'Rep. Tcheca',cod:'CZE'}]},
   {letra:'B',times:[{nome:'Canadá',cod:'CAN'},{nome:'Bósnia',cod:'BIH'},{nome:'Catar',cod:'QAT'},{nome:'Suíça',cod:'SUI'}]},
@@ -551,6 +628,9 @@ function allIds() {
   return ids;
 }
 
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
 window._stickers = {};
 window._duplicates = {};
 let openGroups = new Set();
@@ -559,6 +639,9 @@ let viewMode = 'normal';
 let pubMode = 'normal';
 let compareData = null;
 
+// ═══════════════════════════════════════
+//  STICKER TOGGLE
+// ═══════════════════════════════════════
 function toggleSticker(id) {
   window._stickers[id] = !window._stickers[id];
   if (!window._stickers[id]) delete window._stickers[id];
@@ -573,12 +656,27 @@ function toggleSticker(id) {
 }
 
 function setAllTeam(cod, val) {
-  NUMS.forEach(n => { if (val) window._stickers[cod+'-'+n] = true; else delete window._stickers[cod+'-'+n]; });
+  NUMS.forEach(n => {
+    if (val) window._stickers[cod+'-'+n] = true;
+    else delete window._stickers[cod+'-'+n];
+  });
   window._scheduleSave();
-  renderGroups();
+  NUMS.forEach(n => {
+    const el = document.getElementById('stk-'+cod+'-'+n);
+    if (el) { el.classList.toggle('have', val); if (el.querySelector('span')) el.querySelector('span').style.display = val ? 'none' : ''; }
+  });
+  const have = val ? 20 : 0;
+  const tc = document.getElementById('tc-'+cod);
+  const tpf = document.getElementById('tpf-'+cod);
+  if (tc) tc.textContent = have+'/20';
+  if (tpf) tpf.style.width = (have/20*100)+'%';
   updateStats();
+  updateGroupProgress();
 }
 
+// ═══════════════════════════════════════
+//  STATS
+// ═══════════════════════════════════════
 function updateStats() {
   const ids = allIds();
   const have = ids.filter(id => window._stickers[id]).length;
@@ -600,19 +698,34 @@ function updateGroupProgress() {
     g.times.forEach(t => {
       const th = NUMS.filter(n=>window._stickers[t.cod+'-'+n]).length;
       tot+=20; have+=th;
+      const tc=document.getElementById('tc-'+t.cod);
+      const tpf=document.getElementById('tpf-'+t.cod);
+      if(tc) tc.textContent=th+'/20';
+      if(tpf) tpf.style.width=Math.round(th/20*100)+'%';
     });
+    const el=document.getElementById('gc-'+g.letra);
+    const fill=document.getElementById('gf-'+g.letra);
+    if(el) el.textContent=have+'/'+tot;
+    if(fill) fill.style.width=(tot>0?Math.round(have/tot*100):0)+'%';
     const card=document.getElementById('grp-'+g.letra);
     if(card){if(have===tot)card.classList.add('full');else card.classList.remove('full');}
   });
 }
 
+// ═══════════════════════════════════════
+//  MODE
+// ═══════════════════════════════════════
 function setMode(mode) {
   viewMode = mode;
   ['normal','dup','falta'].forEach(m => document.getElementById('mode-'+m).classList.toggle('active', m===mode));
-  document.getElementById('main-controls').style.display = mode === 'normal' ? 'flex' : 'none';
+  const ctrl = document.getElementById('main-controls');
+  ctrl.style.display = mode === 'normal' ? 'flex' : 'none';
   renderGroups();
 }
 
+// ═══════════════════════════════════════
+//  FILTERS
+// ═══════════════════════════════════════
 function toggleFilter(mode) {
   filterMode = filterMode === mode ? null : mode;
   document.getElementById('chip-miss').classList.toggle('on', filterMode==='miss');
@@ -620,6 +733,9 @@ function toggleFilter(mode) {
   renderGroups();
 }
 
+// ═══════════════════════════════════════
+//  RENDER
+// ═══════════════════════════════════════
 function renderGroups() {
   if (viewMode === 'falta') { renderSummaryMode(); return; }
   if (viewMode === 'dup') { renderDupMode(); return; }
@@ -627,20 +743,28 @@ function renderGroups() {
   const area = document.getElementById('content-area');
   const search = document.getElementById('search').value.toLowerCase().trim();
   const stk = window._stickers;
+  const cmp = compareData;
   area.innerHTML = '';
-  
+  let anyShown = false;
+  let delay = 0;
+
   GRUPOS.forEach(g => {
-    const filteredTimes = g.times.filter(t => !search || t.nome.toLowerCase().includes(search) || t.cod.toLowerCase().includes(search));
+    const filteredTimes = g.times.filter(t => {
+      if (search && !t.nome.toLowerCase().includes(search) && !t.cod.toLowerCase().includes(search)) return false;
+      if (filterMode==='have') return NUMS.some(n=>stk[t.cod+'-'+n]);
+      if (filterMode==='miss') return NUMS.some(n=>!stk[t.cod+'-'+n]);
+      return true;
+    });
     if (!filteredTimes.length) return;
-    
+    anyShown = true;
     let tot=0,have=0;
     g.times.forEach(t=>NUMS.forEach(n=>{tot++;if(stk[t.cod+'-'+n])have++;}));
     const pct=tot>0?Math.round(have/tot*100):0;
     const isOpen=openGroups.has(g.letra)||search.length>0;
-
     const card = document.createElement('div');
     card.className='group-card'+(have===tot?' full':'');
     card.id='grp-'+g.letra;
+    card.style.animationDelay=delay+'ms'; delay+=40;
     card.innerHTML=`
       <div class="group-head" onclick="toggleGroup('${g.letra}')">
         <div class="group-letter">G${g.letra}</div>
@@ -649,12 +773,12 @@ function renderGroups() {
           <div class="group-teams-list">${filteredTimes.map(t=>t.nome).join(' · ')}</div>
         </div>
         <div class="group-right">
-          <div><div class="group-count">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" style="width:${pct}%"></div></div></div>
-          <div class="chevron${isOpen?' open':''}">▼</div>
+          <div><div class="group-count" id="gc-${g.letra}">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" id="gf-${g.letra}" style="width:${pct}%"></div></div></div>
+          <div class="chevron${isOpen?' open':''}" id="ch-${g.letra}">▼</div>
         </div>
       </div>
       <div class="team-section${isOpen?' open':''}" id="ts-${g.letra}">
-        ${filteredTimes.map(t=>renderTeamHTML(t,stk)).join('')}
+        ${filteredTimes.map(t=>renderTeamHTML(t,stk,cmp)).join('')}
       </div>`;
     area.appendChild(card);
   });
@@ -663,73 +787,370 @@ function renderGroups() {
   ESPECIAIS.forEach(e=>{
     const have=e.items.filter(it=>stk[e.prefix?e.prefix+it:it]).length;
     const tot=e.items.length;
-    const isOpen=openGroups.has('sp-'+e.cod);
+    const pct=tot>0?Math.round(have/tot*100):0;
+    const isOpen=openGroups.has('sp-'+e.cod)||document.getElementById('search').value.length>0;
     const card=document.createElement('div');
     card.className='group-card';
+    card.style.animationDelay=delay+'ms'; delay+=40;
     card.innerHTML=`
       <div class="group-head" onclick="toggleGroup('sp-${e.cod}')">
         <div class="group-letter sp">${e.letra}</div>
-        <div class="group-meta"><div class="group-title">${e.secao}</div></div>
-        <div class="group-right"><div class="chevron${isOpen?' open':''}">▼</div></div>
+        <div class="group-meta"><div class="group-title">${e.secao}</div><div class="group-teams-list">${tot} figurinhas especiais</div></div>
+        <div class="group-right">
+          <div><div class="group-count" id="gc-sp-${e.cod}">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" id="gf-sp-${e.cod}" style="width:${pct}%"></div></div></div>
+          <div class="chevron${isOpen?' open':''}" id="ch-sp-${e.cod}">▼</div>
+        </div>
       </div>
       <div class="team-section${isOpen?' open':''}" id="ts-sp-${e.cod}">
         <div class="team-row">
+          <div class="quick-actions">
+            <button class="qa-btn ga" onclick="setAllSpecial(${JSON.stringify(e)},true)">✓ Marcar todos</button>
+            <button class="qa-btn ra" onclick="setAllSpecial(${JSON.stringify(e)},false)">✗ Desmarcar</button>
+          </div>
           <div class="sticker-grid">
-            ${e.items.map(it=>{const id=e.prefix?e.prefix+it:it;return`<div class="stk sp-stk${stk[id]?' have':''}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${it}</span></div>`}).join('')}
+            ${e.items.map(it=>{const id=e.prefix?e.prefix+it:it;const label=e.prefix?it:it.replace('CC','');const has=stk[id];return`<div class="stk sp-stk${has?' have':''}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${label}</span></div>`;}).join('')}
           </div>
         </div>
+      </div>`;
+    area.appendChild(card);
+    anyShown=true;
+  });
+
+  if (!anyShown) area.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--c-text3);font-size:14px">🔍 Nenhuma seleção encontrada</div>';
+}
+
+function renderTeamHTML(t, stk, cmp) {
+  const have=NUMS.filter(n=>stk[t.cod+'-'+n]).length;
+  const pct=Math.round(have/20*100);
+  const stickersHTML=NUMS.map(n=>{
+    const id=t.cod+'-'+n;
+    const iHave=stk[id]; const friendHas=cmp?.[id];
+    let cls='stk';
+    if(iHave&&friendHas) cls+=' both-have';
+    else if(iHave) cls+=' have';
+    else if(friendHas) cls+=' friend-has';
+    return`<div class="${cls}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${n}</span></div>`;
+  }).join('');
+  return`<div class="team-row">
+    <div class="team-head">
+      <div class="team-identity"><span class="team-flag-code">${t.cod}</span><span class="team-name">${t.nome}</span></div>
+      <span class="team-count-badge" id="tc-${t.cod}">${have}/20</span>
+    </div>
+    <div class="team-prog-bar"><div class="team-prog-fill" id="tpf-${t.cod}" style="width:${pct}%"></div></div>
+    <div class="quick-actions" style="margin-top:10px">
+      <button class="qa-btn ga" onclick="setAllTeam('${t.cod}',true)">✓ Marcar todos</button>
+      <button class="qa-btn ra" onclick="setAllTeam('${t.cod}',false)">✗ Desmarcar</button>
+    </div>
+    <div class="sticker-grid">${stickersHTML}</div>
+  </div>`;
+}
+
+function setAllSpecial(e, val) {
+  e.items.forEach(it=>{const id=e.prefix?e.prefix+it:it;if(val)window._stickers[id]=true;else delete window._stickers[id];});
+  window._scheduleSave();
+  renderGroups();
+  updateStats();
+}
+
+function toggleGroup(key) {
+  if(openGroups.has(key))openGroups.delete(key);else openGroups.add(key);
+  const isOpen=openGroups.has(key);
+  const ts=document.getElementById('ts-'+key);
+  const ch=document.getElementById('ch-'+key);
+  if(ts)ts.classList.toggle('open',isOpen);
+  if(ch)ch.classList.toggle('open',isOpen);
+}
+
+// ═══════════════════════════════════════
+//  SUMMARY MODE
+// ═══════════════════════════════════════
+function renderSummaryMode() {
+  const area = document.getElementById('content-area');
+  const stk = window._stickers;
+  area.innerHTML = GRUPOS.map(g=>{
+    const times=g.times.map(t=>{const have=NUMS.filter(n=>stk[t.cod+'-'+n]).length;return{...t,have};});
+    const gHave=times.reduce((a,t)=>a+t.have,0),gTotal=g.times.length*20;
+    const pct=Math.round(gHave/gTotal*100);
+    return`<div class="group-card" style="margin-bottom:10px">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--c-border)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="display:flex;align-items:center;gap:8px"><div class="group-letter" style="width:30px;height:30px;font-size:14px;border-radius:8px">G${g.letra}</div><span style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px">Grupo ${g.letra}</span></div>
+          <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:${gHave===gTotal?'var(--c-green)':'var(--c-gold)'}">${gHave}/${gTotal}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${gHave===gTotal?'var(--c-green)':''}"></div></div>
+      </div>
+      <div style="padding:4px 14px">
+        ${times.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--c-border)">
+          <span class="team-flag-code">${t.cod}</span>
+          <span style="flex:1;font-size:12px;color:var(--c-text2)">${t.nome}</span>
+          <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:${t.have===20?'var(--c-green)':t.have===0?'var(--c-text3)':'var(--c-text)'}">${t.have}/20</span>
+          <div style="width:40px;height:4px;background:var(--c-border);border-radius:2px;overflow:hidden"><div style="height:100%;width:${t.have/20*100}%;background:${t.have===20?'var(--c-green)':'var(--c-gold)'};border-radius:2px"></div></div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════
+//  DUPLICATES MODE
+// ═══════════════════════════════════════
+function renderDupMode() {
+  const area = document.getElementById('content-area');
+  const dups = window._duplicates;
+  const allTimes = [];
+  GRUPOS.forEach(g=>g.times.forEach(t=>allTimes.push({cod:t.cod,nome:t.nome,grupo:g.letra})));
+  const totalDups = Object.values(dups).reduce((a,b)=>a+(b||0),0);
+
+  let html = `<div class="dup-form-card">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;margin-bottom:4px">Cadastrar repetida</div>
+    <div style="font-size:12px;color:var(--c-text3);margin-bottom:14px">Escolha o país, número e confirme</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div>
+        <div class="dup-form-label">PAÍS</div>
+        <select id="dup-country" class="dup-select">
+          <option value="">Selecione o país...</option>
+          ${allTimes.map(t=>`<option value="${t.cod}">Grupo ${t.grupo} · ${t.cod} · ${t.nome}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <div class="dup-form-label">Nº DA FIGURINHA (1–20)</div>
+        <div class="dup-num-row">
+          <input id="dup-num" type="number" min="1" max="20" class="dup-num-inp" placeholder="Ex: 7" onkeydown="if(event.key==='Enter')confirmAddDup()">
+          <button class="dup-add-btn" onclick="confirmAddDup()">+ Adicionar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 2px 10px">
+    <div>
+      <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--c-gold)" id="dup-total-hdr">${totalDups}</span>
+      <span style="font-size:12px;color:var(--c-text3);margin-left:6px">figurinhas repetidas</span>
+    </div>
+    ${totalDups>0?`<button onclick="clearAllDups()" style="background:transparent;border:1px solid var(--c-red-dim);color:var(--c-red);border-radius:6px;padding:5px 10px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;cursor:pointer">Limpar tudo</button>`:''}
+  </div>
+  <div id="dup-list" style="display:flex;flex-direction:column;gap:7px">`;
+
+  if (totalDups === 0) {
+    html += `<div style="text-align:center;padding:28px 16px;color:var(--c-text3);font-size:13px;font-family:'Syne',sans-serif"><div style="font-size:32px;margin-bottom:8px">🔁</div>Nenhuma repetida cadastrada</div>`;
+  } else {
+    const grouped = {};
+    Object.entries(dups).forEach(([id,count])=>{if(!count)return;const[cod]=id.split('-');if(!grouped[cod])grouped[cod]=[];grouped[cod].push({id,count});});
+    allTimes.forEach(t=>{
+      if(!grouped[t.cod])return;
+      grouped[t.cod].sort((a,b)=>parseInt(a.id.split('-')[1])-parseInt(b.id.split('-')[1]));
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 2px 2px">
+        <span class="team-flag-code">${t.cod}</span>
+        <span style="font-size:12px;font-weight:600;color:var(--c-text2)">${t.nome}</span>
+        <span style="font-size:11px;color:var(--c-text3);margin-left:auto">Grupo ${t.grupo}</span>
+      </div>`;
+      grouped[t.cod].forEach(({id,count})=>{
+        const num=id.split('-')[1];
+        html+=`<div class="dup-item" id="dupcard-${id}">
+          <div class="dup-num-badge">${num}</div>
+          <div style="flex:1"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px">Figurinha Nº ${num}</div><div style="font-size:11px;color:var(--c-text3);margin-top:1px">repetida ${count}×</div></div>
+          <div class="dup-counter">
+            <button class="dup-counter-btn minus" onclick="dupAdjust('${id}',-1)">−</button>
+            <span class="dup-counter-num" id="dupnum-${id}">${count}</span>
+            <button class="dup-counter-btn plus" onclick="dupAdjust('${id}',+1)">+</button>
+          </div>
+        </div>`;
+      });
+    });
+  }
+  html += '</div>';
+  area.innerHTML = html;
+}
+
+function dupAdjust(id, delta) {
+  const cur = window._duplicates[id] || 0;
+  const next = Math.max(0, Math.min(99, cur + delta));
+  if (next === 0) delete window._duplicates[id]; else window._duplicates[id] = next;
+  window._scheduleSave();
+  document.getElementById('s-dup').textContent = Object.values(window._duplicates).reduce((a,b)=>a+(b||0),0);
+  if (next === 0) renderDupMode();
+  else { const el=document.getElementById('dupnum-'+id); if(el)el.textContent=next; const hdr=document.getElementById('dup-total-hdr'); if(hdr)hdr.textContent=Object.values(window._duplicates).reduce((a,b)=>a+(b||0),0); }
+}
+
+function confirmAddDup() {
+  const cod = document.getElementById('dup-country')?.value;
+  const numRaw = document.getElementById('dup-num')?.value;
+  if (!cod) { showToast('Escolha um país!'); return; }
+  const num = parseInt(numRaw);
+  if (!num || num < 1 || num > 20) { showToast('Número inválido! (1–20)'); return; }
+  const id = cod+'-'+num;
+  const cur = window._duplicates[id] || 0;
+  window._duplicates[id] = cur + 1;
+  window._scheduleSave();
+  document.getElementById('dup-num').value = '';
+  document.getElementById('dup-num').focus();
+  renderDupMode();
+  updateStats();
+  showToast(`+1 · ${cod} Nº${num}`, 'success');
+}
+
+function clearAllDups() {
+  window._duplicates = {};
+  window._scheduleSave();
+  updateStats();
+  renderDupMode();
+}
+
+// ═══════════════════════════════════════
+//  PUBLIC PROFILE RENDER
+// ═══════════════════════════════════════
+function renderPublicProfile(data) {
+  document.getElementById('public-profile').style.display = 'flex';
+  document.getElementById('pub-name').textContent = data.name?.split(' ')[0] || 'Usuário';
+  const photoEl = document.getElementById('pub-photo');
+  if (data.photo) { photoEl.src = data.photo; photoEl.style.display = 'block'; } else photoEl.style.display = 'none';
+
+  const stk = data.stickers || {};
+  const dups = data.duplicates || {};
+  const ids = allIds();
+  const have = ids.filter(id=>stk[id]).length;
+  const total = ids.length;
+  const pct = total > 0 ? Math.round(have/total*100) : 0;
+  const dupTotal = Object.values(dups).reduce((a,b)=>a+(b||0),0);
+
+  document.getElementById('pub-sub').textContent = `${pct}% completo · Copa 2026`;
+  document.getElementById('pub-prog-text').textContent = `${have} / ${total}`;
+  document.getElementById('pub-prog-fill').style.width = pct+'%';
+  document.getElementById('pub-s-have').textContent = have;
+  document.getElementById('pub-s-miss').textContent = total-have;
+  document.getElementById('pub-s-tot').textContent = total;
+  document.getElementById('pub-s-dup').textContent = dupTotal;
+
+  renderPublicAlbum(stk);
+}
+
+function setPubMode(mode) {
+  pubMode = mode;
+  ['normal','dup'].forEach(m=>document.getElementById('pub-mode-'+m).classList.toggle('active',m===mode));
+  const data = window._publicData;
+  if (!data) return;
+  if (mode === 'normal') renderPublicAlbum(data.stickers||{});
+  else renderPublicDups(data.duplicates||{});
+}
+
+function renderPublicAlbum(stk) {
+  const area = document.getElementById('pub-content-area');
+  area.innerHTML = '';
+  let delay = 0;
+  GRUPOS.forEach(g=>{
+    let tot=0,have=0;
+    g.times.forEach(t=>NUMS.forEach(n=>{tot++;if(stk[t.cod+'-'+n])have++;}));
+    const pct=tot>0?Math.round(have/tot*100):0;
+    const card=document.createElement('div');
+    card.className='group-card'+(have===tot?' full':'');
+    card.style.animationDelay=delay+'ms'; delay+=30;
+    card.innerHTML=`
+      <div class="group-head" onclick="pubToggleGroup('${g.letra}')">
+        <div class="group-letter">G${g.letra}</div>
+        <div class="group-meta"><div class="group-title">GRUPO ${g.letra}</div><div class="group-teams-list">${g.times.map(t=>t.nome).join(' · ')}</div></div>
+        <div class="group-right">
+          <div><div class="group-count">${have}/${tot}</div><div class="group-mini-bar"><div class="group-mini-fill" style="width:${pct}%"></div></div></div>
+          <div class="chevron" id="pub-ch-${g.letra}">▼</div>
+        </div>
+      </div>
+      <div class="team-section" id="pub-ts-${g.letra}">
+        ${g.times.map(t=>{
+          const th=NUMS.filter(n=>stk[t.cod+'-'+n]).length;
+          const stickersHTML=NUMS.map(n=>{const id=t.cod+'-'+n;return`<div class="stk readonly${stk[id]?' have':''}" title="Nº ${n}"><span>${n}</span></div>`;}).join('');
+          return`<div class="team-row">
+            <div class="team-head"><div class="team-identity"><span class="team-flag-code">${t.cod}</span><span class="team-name">${t.nome}</span></div><span class="team-count-badge">${th}/20</span></div>
+            <div class="team-prog-bar"><div class="team-prog-fill" style="width:${Math.round(th/20*100)}%"></div></div>
+            <div class="sticker-grid" style="margin-top:10px">${stickersHTML}</div>
+          </div>`;
+        }).join('')}
       </div>`;
     area.appendChild(card);
   });
 }
 
-function renderTeamHTML(t, stk) {
-  const have=NUMS.filter(n=>stk[t.cod+'-'+n]).length;
-  return `<div class="team-row">
-    <div class="team-head">
-      <div class="team-identity"><span class="team-flag-code">${t.cod}</span><span class="team-name">${t.nome}</span></div>
-      <span class="team-count-badge">${have}/20</span>
-    </div>
-    <div class="quick-actions" style="margin-top:10px">
-      <button class="qa-btn ga" onclick="setAllTeam('${t.cod}',true)">✓ Todos</button>
-      <button class="qa-btn ra" onclick="setAllTeam('${t.cod}',false)">✗ Limpar</button>
-    </div>
-    <div class="sticker-grid">${NUMS.map(n=>{const id=t.cod+'-'+n;return`<div class="stk${stk[id]?' have':''}" id="stk-${id}" onclick="toggleSticker('${id}')"><span>${n}</span></div>`}).join('')}</div>
-  </div>`;
+function pubToggleGroup(key) {
+  const ts=document.getElementById('pub-ts-'+key);
+  const ch=document.getElementById('pub-ch-'+key);
+  if(ts)ts.classList.toggle('open');
+  if(ch)ch.classList.toggle('open');
 }
 
-function toggleGroup(key) {
-  if(openGroups.has(key))openGroups.delete(key);else openGroups.add(key);
-  renderGroups();
+function renderPublicDups(dups) {
+  const area = document.getElementById('pub-content-area');
+  const allTimes=[];
+  GRUPOS.forEach(g=>g.times.forEach(t=>allTimes.push({cod:t.cod,nome:t.nome,grupo:g.letra})));
+  const totalDups=Object.values(dups).reduce((a,b)=>a+(b||0),0);
+
+  if (totalDups === 0) {
+    area.innerHTML='<div style="text-align:center;padding:48px 20px;color:var(--c-text3)"><div style="font-size:36px;margin-bottom:10px">🔁</div><div style="font-size:14px">Nenhuma repetida cadastrada</div></div>';
+    return;
+  }
+
+  let html=`<div style="padding:8px 0 12px"><span style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:22px;color:var(--c-gold)">${totalDups}</span><span style="font-size:12px;color:var(--c-text3);margin-left:8px">figurinhas repetidas disponíveis para troca</span></div><div style="display:flex;flex-direction:column;gap:7px">`;
+  const grouped={};
+  Object.entries(dups).forEach(([id,count])=>{if(!count)return;const[cod]=id.split('-');if(!grouped[cod])grouped[cod]=[];grouped[cod].push({id,count});});
+  allTimes.forEach(t=>{
+    if(!grouped[t.cod])return;
+    grouped[t.cod].sort((a,b)=>parseInt(a.id.split('-')[1])-parseInt(b.id.split('-')[1]));
+    html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 2px 2px"><span class="team-flag-code">${t.cod}</span><span style="font-size:12px;font-weight:600;color:var(--c-text2)">${t.nome}</span></div>`;
+    grouped[t.cod].forEach(({id,count})=>{
+      const num=id.split('-')[1];
+      html+=`<div class="dup-item">
+        <div class="dup-num-badge">${num}</div>
+        <div style="flex:1"><div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:13px">Figurinha Nº ${num}</div><div style="font-size:11px;color:var(--c-text3)">tem ${count} para trocar</div></div>
+        <div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:20px;color:var(--c-gold)">×${count}</div>
+      </div>`;
+    });
+  });
+  html+='</div>';
+  area.innerHTML=html;
 }
 
-function renderSummaryMode() {
-  const area = document.getElementById('content-area');
-  area.innerHTML = '<div style="padding:10px;text-align:center">Visualização de resumo carregada.</div>';
+// ═══════════════════════════════════════
+//  SHARE & COMPARE
+// ═══════════════════════════════════════
+function showShareModal() {
+  openModal('modal-share');
 }
 
-function renderDupMode() {
-  const area = document.getElementById('content-area');
-  area.innerHTML = '<div style="padding:20px;text-align:center">Modo Repetidas disponível.</div>';
+function copyShareLink() {
+  navigator.clipboard.writeText(window._shareUrl||'').then(()=>showToast('Link copiado!','success')).catch(()=>{});
 }
 
-function renderPublicProfile(data) {
-  document.getElementById('public-profile').style.display = 'flex';
-  document.getElementById('pub-name').textContent = data.name || 'Usuário';
+function nativeShare() {
+  if (navigator.share) {
+    navigator.share({ title: 'Meu Álbum Copa 2026', url: window._shareUrl });
+  } else copyShareLink();
 }
 
-function showShareModal() { openModal('modal-share'); }
-function copyShareLink() { navigator.clipboard.writeText(window._shareUrl||'').then(()=>showToast('Copiado!','success')); }
-function nativeShare() { if (navigator.share) navigator.share({url: window._shareUrl}); else copyShareLink(); }
+async function loadCompareFromLink() {
+  const input = document.getElementById('compare-link-input').value.trim();
+  const match = input.match(/\/perfil\/(.+)$/);
+  if (!match) { showToast('Link inválido!','err'); return; }
+  const uid = match[1].trim();
+  try {
+    const ref = window._doc(window._db, 'users', uid);
+    const snap = await window._getDoc(ref);
+    if (!snap.exists()) { showToast('Perfil não encontrado','err'); return; }
+    compareData = snap.data().stickers || {};
+    closeModal('modal-compare');
+    showToast('Comparando com '+snap.data().name?.split(' ')[0],'success');
+    renderGroups();
+  } catch(e) { showToast('Erro ao carregar perfil','err'); }
+}
+
+// ═══════════════════════════════════════
+//  MODAL / TOAST
+// ═══════════════════════════════════════
 function openModal(id){document.getElementById(id).classList.add('show');}
 function closeModal(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.modal-bg').forEach(el=>{el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('show');});});
 
 let toastTimer;
 function showToast(msg,type){
   const el=document.getElementById('toast');
-  el.textContent=msg; el.className='toast '+type+' show';
+  el.textContent=msg; el.className='toast'+(type?' '+type:'')+' show';
   clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>el.classList.remove('show'),2000);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
 }
 </script>
 </body>
