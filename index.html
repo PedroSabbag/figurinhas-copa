@@ -523,6 +523,7 @@ function startApp(user) {
   window._userRef = ref;
 
   onSnapshot(ref, snap => {
+    if (_isSaving) return; // ignora snapshot enquanto save está pendente
     if (snap.exists()) {
       const data = snap.data();
       window._stickers = data.stickers || {};
@@ -595,10 +596,12 @@ window.signOut = async () => {
 
 // Salva com debounce
 let saveTimer;
+let _isSaving = false;
 window._scheduleSave = () => {
   const ind = document.getElementById('save-indicator');
   ind.textContent = '💾 Salvando...';
   ind.className = 'save-indicator saving';
+  _isSaving = true;
   clearTimeout(saveTimer);
   saveTimer = setTimeout(async () => {
     try {
@@ -615,6 +618,8 @@ window._scheduleSave = () => {
     } catch(e) {
       ind.className = 'save-indicator';
       showToast('Erro ao salvar', 'err');
+    } finally {
+      _isSaving = false;
     }
   }, 800);
 };
