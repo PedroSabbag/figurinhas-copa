@@ -8,7 +8,6 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
 <meta name="description" content="Controle suas figurinhas da Copa 2026 online. Marque o que você tem, o que falta e gerencie suas repetidas.">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Google AdSense: substitua ca-pub-4691909665938362 pelo seu Publisher ID -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4691909665938362" crossorigin="anonymous"></script>
 <style>
 :root {
@@ -345,11 +344,10 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
     <div class="stat-tile" onclick="setMode('dup')" style="cursor:pointer"><div class="stat-n o" id="s-dup">0</div><div class="stat-l">Repet.</div></div>
   </div>
 
-  <!-- ANÚNCIO 1 — abaixo das estatísticas -->
+  <!-- ANÚNCIO 1 -->
   <div style="padding: 6px 14px 0">
     <div class="ad-slot">
       <div class="ad-slot-label">Publicidade</div>
-      <!-- Substitua os atributos data-ad-* pelos seus do AdSense -->
       <ins class="adsbygoogle ad-slot-inner"
            style="display:block"
            data-ad-client="ca-pub-4691909665938362"
@@ -368,7 +366,7 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
 
   <div class="content-area" id="content-area"></div>
 
-  <!-- ANÚNCIO 3 — acima da barra de botões -->
+  <!-- ANÚNCIO 3 -->
   <div style="padding: 6px 14px 12px">
     <div class="ad-slot">
       <div class="ad-slot-label">Publicidade</div>
@@ -476,9 +474,6 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-// ─────────────────────────────────────────
-//  🔧 COLE SUAS CREDENCIAIS DO FIREBASE AQUI
-// ─────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyBWIzII8TGMLllvs1JDZqK7bVrKhRQe_Mc",
   authDomain: "figurinhascopa-bb95d.firebaseapp.com",
@@ -487,13 +482,11 @@ const firebaseConfig = {
   messagingSenderId: "446600338818",
   appId: "1:446600338818:web:b97b4094ee66e44fa1039b"
 };
-// ─────────────────────────────────────────
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Expõe pra funções globais
 window._auth = auth;
 window._db = db;
 window._fbSignOut = fbSignOut;
@@ -507,17 +500,14 @@ window._getDoc = getDoc;
 window._setDoc = setDoc;
 window._onSnapshot = onSnapshot;
 
-// ── Detecta modo: perfil público ou app normal ──
 const urlPath = window.location.pathname;
 const publicMatch = urlPath.match(/^\/perfil\/(.+)$/);
 
 if (publicMatch) {
-  // MODO PÚBLICO — carrega dados do usuário pelo UID
   window._publicUid = publicMatch[1];
   document.getElementById('loading-screen').style.display = 'flex';
   loadPublicProfile(publicMatch[1]);
 } else {
-  // MODO NORMAL — verifica login
   onAuthStateChanged(auth, user => {
     document.getElementById('loading-screen').style.display = 'none';
     if (user) {
@@ -558,7 +548,6 @@ function startApp(user) {
   if (user.photoURL) { photoEl.src = user.photoURL; photoEl.style.display = 'block'; phEl.style.display = 'none'; }
   else { phEl.textContent = (user.displayName||'U')[0]; phEl.style.display = 'flex'; photoEl.style.display = 'none'; }
 
-  // Share link
   const shareUrl = `${window.location.origin}/perfil/${user.uid}`;
   document.getElementById('share-link-text').textContent = shareUrl;
   window._shareUrl = shareUrl;
@@ -566,12 +555,11 @@ function startApp(user) {
   document.getElementById('app').style.display = 'flex';
   document.getElementById('login-screen').style.display = 'none';
 
-  // Carrega dados em tempo real
   const ref = doc(db, 'users', user.uid);
   window._userRef = ref;
 
   onSnapshot(ref, snap => {
-    if (_isSaving) return; // ignora snapshot enquanto save está pendente
+    if (_isSaving) return;
     if (snap.exists()) {
       const data = snap.data();
       window._stickers = data.stickers || {};
@@ -634,7 +622,6 @@ window.showLoginForm = () => {
   document.getElementById('email-login-form').style.display = 'block';
 };
 
-// Menu hambúrguer
 window.toggleMenu = () => {
   const m = document.getElementById('hamburger-menu');
   m.style.display = m.style.display === 'none' ? 'block' : 'none';
@@ -643,23 +630,23 @@ window.closeMenu = () => {
   document.getElementById('hamburger-menu').style.display = 'none';
 };
 
-// Exportar
+// ── EXPORTAR ── CORRIGIDO: .classList.add('show')
 window.showExportModal = () => {
   const data = { stickers: window._stickers || {}, duplicates: window._duplicates || {} };
   document.getElementById('export-code').value = btoa(JSON.stringify(data));
-  document.getElementById('modal-export').classList.add('open');
+  document.getElementById('modal-export').classList.add('show');
 };
 window.copyExportCode = () => {
   const el = document.getElementById('export-code');
   el.select();
-  navigator.clipboard.writeText(el.value).then(() => showToast('Código copiado!', 'ok')).catch(() => { document.execCommand('copy'); showToast('Código copiado!', 'ok'); });
+  navigator.clipboard.writeText(el.value).then(() => showToast('Código copiado!', 'success')).catch(() => { document.execCommand('copy'); showToast('Código copiado!', 'success'); });
 };
 
-// Importar
+// ── IMPORTAR ── CORRIGIDO: .classList.add('show')
 window.showImportModal = () => {
   document.getElementById('import-code').value = '';
   document.getElementById('import-error').textContent = '';
-  document.getElementById('modal-import').classList.add('open');
+  document.getElementById('modal-import').classList.add('show');
 };
 window.doImport = async () => {
   const raw = document.getElementById('import-code').value.trim();
@@ -675,7 +662,7 @@ window.doImport = async () => {
     updateStats();
     renderGroups();
     closeModal('modal-import');
-    showToast('Álbum importado com sucesso!', 'ok');
+    showToast('Álbum importado com sucesso!', 'success');
   } catch(e) {
     errEl.textContent = 'Código inválido. Verifique e tente novamente.';
   }
@@ -689,7 +676,6 @@ window.signOut = async () => {
   document.getElementById('login-screen').style.display = 'flex';
 };
 
-// Salva com debounce
 let saveTimer;
 let _isSaving = false;
 window._scheduleSave = () => {
@@ -943,7 +929,7 @@ function renderGroups() {
       </div>`;
     area.appendChild(card);
 
-    // ANÚNCIO 2 — entre o grupo F (6) e G (7)
+    // ANÚNCIO 2 — entre grupo F e G
     if (g.letra === 'F') {
       const adDiv = document.createElement('div');
       adDiv.style.cssText = 'padding: 4px 0';
@@ -953,7 +939,7 @@ function renderGroups() {
     }
   });
 
-  // Especiais (exceto Página Inicial que já foi renderizada no topo)
+  // Especiais restantes (exceto Página Inicial)
   ESPECIAIS.filter(e => e.cod !== 'PAG').forEach(e => renderEspecialCard(e));
 
   if (!anyShown) area.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--c-text3);font-size:14px">🔍 Nenhuma seleção encontrada</div>';
@@ -1227,7 +1213,7 @@ function renderPublicDups(dups) {
     return;
   }
 
-  let html=`<div style="padding:8px 0 12px"><span style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:22px;color:var(--c-gold)">${totalDups}</span><span style="font-size:12px;color:var(--c-text3);margin-left:8px">figurinhas repetidas disponíveis para troca</span></div><div style="display:flex;flex-direction:column;gap:7px">`;
+  let html=`<div style="padding:8px 0 12px"><span style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--c-gold)">${totalDups}</span><span style="font-size:12px;color:var(--c-text3);margin-left:8px">figurinhas repetidas disponíveis para troca</span></div><div style="display:flex;flex-direction:column;gap:7px">`;
   const grouped={};
   Object.entries(dups).forEach(([id,count])=>{if(!count)return;const[cod]=id.split('-');if(!grouped[cod])grouped[cod]=[];grouped[cod].push({id,count});});
   allTimes.forEach(t=>{
@@ -1238,8 +1224,8 @@ function renderPublicDups(dups) {
       const num=id.split('-')[1];
       html+=`<div class="dup-item">
         <div class="dup-num-badge">${num}</div>
-        <div style="flex:1"><div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:13px">Figurinha Nº ${num}</div><div style="font-size:11px;color:var(--c-text3)">tem ${count} para trocar</div></div>
-        <div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:20px;color:var(--c-gold)">×${count}</div>
+        <div style="flex:1"><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px">Figurinha Nº ${num}</div><div style="font-size:11px;color:var(--c-text3)">tem ${count} para trocar</div></div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--c-gold)">×${count}</div>
       </div>`;
     });
   });
