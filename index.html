@@ -245,6 +245,18 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
 .dup-counter-btn.plus { color: var(--c-green); }
 .dup-counter-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--c-gold); min-width: 28px; text-align: center; }
 
+/* ── HAMBURGER ── */
+.hamburger-btn { background: none; border: none; cursor: pointer; padding: 6px; display: flex; flex-direction: column; gap: 5px; justify-content: center; align-items: center; border-radius: 8px; transition: background 0.2s; }
+.hamburger-btn:active { background: var(--c-border); }
+.hamburger-btn span { display: block; width: 22px; height: 2px; background: var(--c-text); border-radius: 2px; }
+.hamburger-menu { position: fixed; inset: 0; z-index: 999; }
+.hamburger-overlay { position: absolute; inset: 0; }
+.hamburger-panel { position: absolute; top: 60px; right: 12px; background: var(--c-card); border: 1px solid var(--c-border); border-radius: 14px; min-width: 210px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.hamburger-item { padding: 14px 18px; font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--c-text); cursor: pointer; transition: background 0.15s; }
+.hamburger-item:active { background: var(--c-border); }
+.hamburger-item.danger { color: var(--c-red); }
+.hamburger-divider { height: 1px; background: var(--c-border); margin: 2px 0; }
+
 /* ── ADS ── */
 .ad-slot { width: 100%; background: var(--c-card); border: 1px solid var(--c-border); border-radius: var(--radius); overflow: hidden; text-align: center; margin: 6px 0; }
 .ad-slot-label { font-size: 9px; color: var(--c-text3); font-family: 'Syne', sans-serif; letter-spacing: 1px; text-transform: uppercase; padding: 4px 0 2px; }
@@ -310,6 +322,9 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
         </div>
       </div>
       <div class="topbar-badge" id="app-pct">0%</div>
+      <button class="hamburger-btn" onclick="toggleMenu()" id="hamburger-btn">
+        <span></span><span></span><span></span>
+      </button>
     </div>
     <div class="topbar-progress">
       <div class="progress-meta"><span>Progresso geral</span><span id="prog-text">0 / 0</span></div>
@@ -403,6 +418,42 @@ html, body { height: 100%; background: var(--c-bg); color: var(--c-text); font-f
   </div>
 
   <div class="content-area" id="pub-content-area" style="padding-bottom:30px"></div>
+</div>
+
+<!-- MENU HAMBÚRGUER -->
+<div class="hamburger-menu" id="hamburger-menu" style="display:none">
+  <div class="hamburger-overlay" onclick="closeMenu()"></div>
+  <div class="hamburger-panel">
+    <div class="hamburger-item" onclick="closeMenu();showExportModal()">📤 Exportar meu álbum</div>
+    <div class="hamburger-item" onclick="closeMenu();showImportModal()">📥 Importar álbum</div>
+    <div class="hamburger-divider"></div>
+    <div class="hamburger-item danger" onclick="closeMenu();signOut()">🚪 Sair</div>
+  </div>
+</div>
+
+<!-- MODAL EXPORTAR -->
+<div class="modal-bg" id="modal-export">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📤 Exportar Álbum</div>
+    <div class="modal-sub">Copie o código abaixo e guarde em qualquer lugar. Use-o para importar seu progresso em outro dispositivo.</div>
+    <textarea id="export-code" style="width:100%;min-height:120px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:10px;padding:12px;color:var(--c-text);font-family:monospace;font-size:12px;resize:none;margin:12px 0" readonly></textarea>
+    <button class="btn btn-gold btn-full" onclick="copyExportCode()">📋 Copiar código</button>
+    <button class="btn btn-outline btn-full" onclick="closeModal('modal-export')">Fechar</button>
+  </div>
+</div>
+
+<!-- MODAL IMPORTAR -->
+<div class="modal-bg" id="modal-import">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📥 Importar Álbum</div>
+    <div class="modal-sub">Cole o código exportado de outro dispositivo. <strong>Atenção:</strong> isso vai substituir seu progresso atual.</div>
+    <textarea id="import-code" placeholder="Cole o código aqui..." style="width:100%;min-height:120px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:10px;padding:12px;color:var(--c-text);font-family:monospace;font-size:12px;resize:none;margin:12px 0"></textarea>
+    <div class="email-error" id="import-error"></div>
+    <button class="btn btn-gold btn-full" onclick="doImport()">✅ Importar e salvar</button>
+    <button class="btn btn-outline btn-full" onclick="closeModal('modal-import')">Cancelar</button>
+  </div>
 </div>
 
 <!-- MODAL SHARE -->
@@ -584,6 +635,53 @@ window.showRegisterForm = () => {
 window.showLoginForm = () => {
   document.getElementById('email-register-form').style.display = 'none';
   document.getElementById('email-login-form').style.display = 'block';
+};
+
+// Menu hambúrguer
+window.toggleMenu = () => {
+  const m = document.getElementById('hamburger-menu');
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+};
+window.closeMenu = () => {
+  document.getElementById('hamburger-menu').style.display = 'none';
+};
+
+// Exportar
+window.showExportModal = () => {
+  const data = { stickers: window._stickers || {}, duplicates: window._duplicates || {} };
+  document.getElementById('export-code').value = btoa(JSON.stringify(data));
+  document.getElementById('modal-export').classList.add('open');
+};
+window.copyExportCode = () => {
+  const el = document.getElementById('export-code');
+  el.select();
+  navigator.clipboard.writeText(el.value).then(() => showToast('Código copiado!', 'ok')).catch(() => { document.execCommand('copy'); showToast('Código copiado!', 'ok'); });
+};
+
+// Importar
+window.showImportModal = () => {
+  document.getElementById('import-code').value = '';
+  document.getElementById('import-error').textContent = '';
+  document.getElementById('modal-import').classList.add('open');
+};
+window.doImport = async () => {
+  const raw = document.getElementById('import-code').value.trim();
+  const errEl = document.getElementById('import-error');
+  errEl.textContent = '';
+  if (!raw) { errEl.textContent = 'Cole o código primeiro.'; return; }
+  try {
+    const data = JSON.parse(atob(raw));
+    if (typeof data.stickers !== 'object') throw new Error();
+    window._stickers = data.stickers;
+    window._duplicates = data.duplicates || {};
+    window._scheduleSave();
+    updateStats();
+    renderGroups();
+    closeModal('modal-import');
+    showToast('Álbum importado com sucesso!', 'ok');
+  } catch(e) {
+    errEl.textContent = 'Código inválido. Verifique e tente novamente.';
+  }
 };
 
 window.signOut = async () => {
